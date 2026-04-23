@@ -1,10 +1,35 @@
+#!/usr/bin/env python3
+
 """
-Web Scraper for Chilean Electoral Results
+Web Scraper for Chilean Election Results
+=================================================
+Automatic extraction of election results by commune from the official
+SERVEL website, structured into a matrix ready for SQL, Python and DAX.
+
+Features:
+- Iterates over all regions and communes available in SERVEL's dropdowns
+- Normalizes commune and region names (e.g. 'ARICA' -> 'Arica', 'DEL MAULE' -> 'Maule')
+- Saves checkpoints every 10 communes to avoid data loss
+- Exports CSV, Excel and metadata file with candidate dictionary
+
+Requirements:
+- Python 3.7+
+- selenium
+- pandas
+- openpyxl
+
+Workflow:
+1. Initialize Firefox browser
+2. Navigate to SERVEL and activate Electoral Division filter
+3. Get list of regions
+4. For each region, iterate over its communes and extract the results table
+5. Save final results to CSV, Excel and metadata
+
 Author: Alfonso Droguett
 Date: November 2025
-Description: Automated extraction of electoral results by comuna from SERVEL's official website.
-             Outputs a structured matrix ready for SQL, Python (pandas), and DAX analysis.
+Repository: https://github.com/adroguetth/Elecciones_Chile_PrimeraVuelta_2025/tree/main/First%20round/Web%20Scraper
 """
+
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
