@@ -1,10 +1,9 @@
 """
-Web Scraper para Resultados Electorales Chilenos
-Autor: Alfonso Droguett
-Fecha: Noviembre 2025
-Descripción: Extracción automática de resultados electorales por comuna desde SERVEL
-Repositorio (Web-Scraper): https://github.com/adroguetth/Elecciones_Chile_PrimeraVuelta_2025/tree/Web-Scraper
-Repositorio (Proyecto completo): https://github.com/adroguetth/Elecciones_Chile_PrimeraVuelta_2025
+Web Scraper for Chilean Electoral Results
+Author: Alfonso Droguett
+Date: November 2025
+Description: Automated extraction of electoral results by comuna from SERVEL's official website.
+             Outputs a structured matrix ready for SQL, Python (pandas), and DAX analysis.
 """
 
 from selenium import webdriver
@@ -23,7 +22,11 @@ import sys
 import os
 from datetime import datetime
 
-# Configuración de logging
+# ---------------------------------------------------------------------------
+# Logging configuration
+# Writes to both a log file (UTF-8) and stdout so progress is visible in the
+# terminal during long extraction runs.
+# ---------------------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -34,32 +37,49 @@ logging.basicConfig(
 )
 
 
-class ScraperEleccionesServel:
+class ServelElectionScraper:
     """
-    Clase principal para el scraping de resultados electorales del SERVEL
+    Main scraper class for Chilean electoral results from SERVEL.
 
-    Esta clase automatiza la extracción de datos electorales por comuna
-    desde el sitio web oficial del SERVEL y los estructura en un formato
-    óptimo para análisis de datos.
+    Automates Firefox to navigate the official SERVEL election results page,
+    iterates over every region and comuna available in the dropdown menus,
+    and builds a wide-format DataFrame where each row is one comuna and each
+    column group contains votes and percentage for one candidate (or for the
+    votos emitidos / votos nulos / votos blancos totals).
+
+    Usage
+    -----
+    >>> scraper = ServelElectionScraper(headless=True, max_comunas=10)
+    >>> df = scraper.run_extraction()
     """
 
-    def __init__(self, headless=False, max_comunas=None):
+    def __init__(self, headless: bool = False, max_comunas: int | None = None):
         """
-        Inicializa el scraper
+        Initialise the scraper.
 
-        Args:
-            headless (bool): Ejecutar navegador en modo headless
-            max_comunas (int): Límite de comunas a procesar (None para todas)
+        Parameters
+        ----------
+        headless : bool
+            Run Firefox in headless mode (no visible window).
+            Useful for server environments or CI pipelines.
+        max_comunas : int or None
+            Cap the total number of comunas to process.
+            Pass ``None`` (default) to process all comunas in Chile.
+            Useful for quick smoke-tests during development.
         """
         self.headless = headless
         self.max_comunas = max_comunas
         self.driver = None
-        self.datos_completos = {}
-        self.comunas_procesadas = 0
-        self.comunas_con_error = 0
+        self.complete_data: dict = {}   # Keyed by (comuna_name, region_name)
+        self.processed_comunas: int = 0
+        self.failed_comunas: int = 0
 
-        # Mapeo de candidatos a nombres simplificados para columnas
-        self.MAPEO_CANDIDATOS = {
+        # ---------------------------------------------------------------------------
+        # Candidate name mapping
+        # Maps the full name as it appears on SERVEL to a short, SQL-safe identifier
+        # used as a column prefix in the output dataset.
+        # ---------------------------------------------------------------------------
+        self.CANDIDATE_MAP: dict[str, str] = {
             "FRANCO PARISI FERNANDEZ": "parisi",
             "JEANNETTE JARA ROMAN": "jara",
             "MARCO ANTONIO ENRIQUEZ-OMINAMI": "enriquez_ominami",
@@ -70,106 +90,100 @@ class ScraperEleccionesServel:
             "HAROLD MAYNE-NICHOLLS SECUL": "mayne_nicholls"
         }
 
-        # Configuración de tiempos de espera
-        self.TIEMPO_ESPERA_CARGA = 15
-        self.TIEMPO_ESPERA_SELECCION = 5
-        self.TIEMPO_ESPERA_DATOS = 6
+        # ---------------------------------------------------------------------------
+        # Selenium wait times (seconds)
+        # Tuned for SERVEL's typical response times. Increase if you observe
+        # frequent TimeoutExceptions on a slow connection.
+        # ---------------------------------------------------------------------------
+        self.WAIT_PAGE_LOAD: int = 15       # Initial page load
+        self.WAIT_DROPDOWN_SELECT: int = 5  # After selecting a region/comuna
+        self.WAIT_TABLE_RENDER: int = 6     # After selecting a comuna, for the table to appear
 
-    def normalizar_nombre_comuna(self, nombre_comuna):
+    # =========================================================================
+    # Name normalisation helpers
+    # =========================================================================
+
+    def normalise_comuna_name(self, raw_name: str) -> str:
         """
-        Normaliza el nombre de la comuna a formato de título
+        Convert a raw comuna name from SERVEL (all-caps) to Title Case,
+        respecting Spanish prepositions and Roman numerals.
 
-        Args:
-            nombre_comuna (str): Nombre de la comuna en mayúsculas
+        The function applies three passes:
+        1. Lowercase everything, then capitalise each word.
+        2. Lower-case Spanish prepositions/conjunctions (de, del, la, …).
+        3. Look up the result in a curated dictionary of well-known ciudad names
+           to guarantee correct accentuation (e.g. ``Valparaíso``, ``Ñuñoa``).
 
-        Returns:
-            str: Nombre de la comuna en formato título
+        Parameters
+        ----------
+        raw_name : str
+            Comuna name as returned by SERVEL (e.g. ``"VIÑA DEL MAR"``).
+
+        Returns
+        -------
+        str
+            Normalised name (e.g. ``"Viña del Mar"``).
         """
-        # Lista de excepciones para palabras que deben mantenerse en mayúsculas
-        excepciones = ['II', 'III', 'IV', 'VI', 'VII', 'X', 'XIV', 'XV', 'XVI', 'XVIII', 'XIX']
+        # Roman numerals that must stay uppercase (appear in some district names)
+        ROMAN_NUMERALS = {'II', 'III', 'IV', 'VI', 'VII', 'X', 'XIV', 'XV', 'XVI', 'XVIII', 'XIX'}
 
-        # Convertir a minúsculas primero
-        nombre_minusculas = nombre_comuna.lower()
+        words = raw_name.lower().split()
+        capitalised = []
 
-        # Capitalizar cada palabra, pero manejar excepciones
-        palabras = nombre_minusculas.split()
-        palabras_capitalizadas = []
-
-        for palabra in palabras:
-            # Manejar casos especiales como "Ñ" y palabras con excepciones
-            if palabra.upper() in excepciones:
-                palabras_capitalizadas.append(palabra.upper())
+        for word in words:
+            if word.upper() in ROMAN_NUMERALS:
+                capitalised.append(word.upper())
+            elif word.startswith('ñ'):
+                # Python's str.capitalize() does not handle 'ñ' → 'Ñ' correctly
+                capitalised.append('Ñ' + word[1:])
             else:
-                # Capitalizar palabra, manejando correctamente la "ñ"
-                if palabra.startswith('ñ'):
-                    palabras_capitalizadas.append('Ñ' + palabra[1:].capitalize())
-                else:
-                    palabras_capitalizadas.append(palabra.capitalize())
+                capitalised.append(word.capitalize())
 
-        nombre_normalizado = ' '.join(palabras_capitalizadas)
+        normalised = ' '.join(capitalised)
 
-        # Correcciones específicas para nombres de comunas
-        correcciones = {
-            'De': 'de',
-            'Del': 'del',
-            'La': 'la',
-            'Las': 'las',
-            'Los': 'los',
-            'Y': 'y',
-            'E': 'e',
-            'En': 'en',
-            'Con': 'con'
+        # Lower-case Spanish prepositions and conjunctions that appear mid-name
+        LOWERCASE_WORDS = {
+            'De': 'de', 'Del': 'del', 'La': 'la', 'Las': 'las',
+            'Los': 'los', 'Y': 'y', 'E': 'e', 'En': 'en', 'Con': 'con'
         }
+        for wrong, right in LOWERCASE_WORDS.items():
+            normalised = re.sub(r'\b' + wrong + r'\b', right, normalised)
 
-        # Aplicar correcciones de preposiciones y conjunciones
-        for incorrecto, correcto in correcciones.items():
-            nombre_normalizado = re.sub(r'\b' + incorrecto + r'\b', correcto, nombre_normalizado)
-
-        # Correcciones específicas para nombres conocidos
-        nombres_especificos = {
-            'Arica': 'Arica',
-            'Iquique': 'Iquique',
-            'Antofagasta': 'Antofagasta',
-            'Copiapó': 'Copiapó',
-            'La Serena': 'La Serena',
-            'Coquimbo': 'Coquimbo',
-            'Valparaíso': 'Valparaíso',
-            'Viña del Mar': 'Viña del Mar',
-            'Santiago': 'Santiago',
-            'Rancagua': 'Rancagua',
-            'Talca': 'Talca',
-            'Chillán': 'Chillán',
-            'Concepción': 'Concepción',
-            'Temuco': 'Temuco',
-            'Valdivia': 'Valdivia',
-            'Puerto Montt': 'Puerto Montt',
-            'Coyhaique': 'Coyhaique',
-            'Punta Arenas': 'Punta Arenas',
-            'Ñuñoa': 'Ñuñoa',
-            'Providencia': 'Providencia',
-            'Las Condes': 'Las Condes',
-            'Maipú': 'Maipú',
-            'San Bernardo': 'San Bernardo',
-            'Puente Alto': 'Puente Alto'
+        # Curated overrides for names that require specific accentuation
+        KNOWN_NAMES = {
+            'Arica': 'Arica', 'Iquique': 'Iquique', 'Antofagasta': 'Antofagasta',
+            'Copiapó': 'Copiapó', 'La Serena': 'La Serena', 'Coquimbo': 'Coquimbo',
+            'Valparaíso': 'Valparaíso', 'Viña del Mar': 'Viña del Mar',
+            'Santiago': 'Santiago', 'Rancagua': 'Rancagua', 'Talca': 'Talca',
+            'Chillán': 'Chillán', 'Concepción': 'Concepción', 'Temuco': 'Temuco',
+            'Valdivia': 'Valdivia', 'Puerto Montt': 'Puerto Montt',
+            'Coyhaique': 'Coyhaique', 'Punta Arenas': 'Punta Arenas',
+            'Ñuñoa': 'Ñuñoa', 'Providencia': 'Providencia',
+            'Las Condes': 'Las Condes', 'Maipú': 'Maipú',
+            'San Bernardo': 'San Bernardo', 'Puente Alto': 'Puente Alto'
         }
+        return KNOWN_NAMES.get(normalised, normalised)
 
-        # Si el nombre está en el diccionario de específicos, usar esa versión
-        if nombre_normalizado in nombres_especificos:
-            return nombres_especificos[nombre_normalizado]
-
-        return nombre_normalizado
-
-    def normalizar_nombre_region(self, nombre_region):
+    def normalise_region_name(self, raw_name: str) -> str:
         """
-        Normaliza nombres de regiones removiendo prefijos como 'De', 'Del'
+        Convert a raw region name from SERVEL to a short, readable label.
 
-        Args:
-            nombre_region (str): Nombre original de la región
+        SERVEL stores region names with administrative prefixes such as
+        ``"DE LOS LAGOS"`` or ``"METROPOLITANA DE SANTIAGO"``. This method
+        strips those prefixes and returns the canonical short form used
+        throughout the dataset (e.g. ``"Los Lagos"``, ``"Metropolitana"``).
 
-        Returns:
-            str: Nombre normalizado de la región
+        Parameters
+        ----------
+        raw_name : str
+            Region name as returned by SERVEL.
+
+        Returns
+        -------
+        str
+            Normalised region name.
         """
-        mapeo_especial = {
+        REGION_MAP = {
             "METROPOLITANA DE SANTIAGO": "Metropolitana",
             "DEL LIBERTADOR GENERAL BERNARDO O'HIGGINS": "Libertador",
             "DEL MAULE": "Maule",
@@ -188,64 +202,82 @@ class ScraperEleccionesServel:
             "DE MAGALLANES Y DE LA ANTARTICA CHILENA": "Magallanes"
         }
 
-        # Verificar si el nombre está en el mapeo especial
-        if nombre_region.upper() in mapeo_especial:
-            return mapeo_especial[nombre_region.upper()]
+        upper = raw_name.upper()
+        if upper in REGION_MAP:
+            return REGION_MAP[upper]
 
-        # Normalización genérica: eliminar prefijos
-        nombre_normalizado = re.sub(
+        # Generic fallback: strip leading preposition (De / Del / De La / De Los)
+        stripped = re.sub(
             r'^(DE|DEL|DE LA|DE LOS)\s+',
             '',
-            nombre_region,
+            raw_name,
             flags=re.IGNORECASE
         )
 
-        # Capitalizar correctamente
-        palabras = nombre_normalizado.split()
-        if palabras:
-            palabras[0] = palabras[0].capitalize()
-            for i in range(1, len(palabras)):
-                if palabras[i].upper() in ['Y', 'O', 'DE', 'DEL']:
-                    palabras[i] = palabras[i].lower()
-                else:
-                    palabras[i] = palabras[i].capitalize()
+        words = stripped.split()
+        if not words:
+            return stripped
 
-        return ' '.join(palabras)
+        words[0] = words[0].capitalize()
+        for i in range(1, len(words)):
+            if words[i].upper() in {'Y', 'O', 'DE', 'DEL'}:
+                words[i] = words[i].lower()
+            else:
+                words[i] = words[i].capitalize()
 
-    def simplificar_nombre_candidato(self, nombre_completo):
+        return ' '.join(words)
+
+    def simplify_candidate_name(self, full_name: str) -> str:
         """
-        Simplifica el nombre del candidato para uso en nombres de columnas
+        Map a candidate's full name to its short, SQL-safe column prefix.
 
-        Args:
-            nombre_completo (str): Nombre completo del candidato
+        The lookup order is:
+        1. Exact match in ``CANDIDATE_MAP``.
+        2. Partial match (full_name contains a key from the map).
+        3. Fallback: use the last word (surname), strip non-alphanumeric chars.
 
-        Returns:
-            str: Nombre simplificado para la columna
+        Parameters
+        ----------
+        full_name : str
+            Candidate name as it appears in the SERVEL results table.
+
+        Returns
+        -------
+        str
+            Short identifier used as a column prefix (e.g. ``"kast"``).
         """
-        nombre_upper = nombre_completo.upper().strip()
+        upper = full_name.upper().strip()
 
-        # Buscar coincidencia exacta en el diccionario
-        for nombre_largo, nombre_corto in self.MAPEO_CANDIDATOS.items():
-            if nombre_upper == nombre_largo:
-                return nombre_corto
+        # Exact match
+        for long_name, short_name in self.CANDIDATE_MAP.items():
+            if upper == long_name:
+                return short_name
 
-        # Buscar coincidencia parcial
-        for nombre_largo, nombre_corto in self.MAPEO_CANDIDATOS.items():
-            if nombre_largo in nombre_upper:
-                return nombre_corto
+        # Partial match (handles minor spelling variations on the website)
+        for long_name, short_name in self.CANDIDATE_MAP.items():
+            if long_name in upper:
+                return short_name
 
-        # Si no hay coincidencia, usar el primer apellido
-        palabras = nombre_completo.split()
-        if palabras:
-            apellido = palabras[-1].lower()
-            # Reemplazar caracteres especiales para compatibilidad con SQL
-            apellido = re.sub(r'[^a-zA-Z0-9_]', '_', apellido)
-            return apellido
+        # Fallback: derive from surname, sanitise for SQL compatibility
+        words = full_name.split()
+        if words:
+            surname = words[-1].lower()
+            return re.sub(r'[^a-zA-Z0-9_]', '_', surname)
 
-        return "candidato_desconocido"
+        return "unknown_candidate"
 
-    def inicializar_navegador(self):
-        """Configura e inicializa el navegador Firefox con opciones optimizadas"""
+    # =========================================================================
+    # Browser setup and navigation
+    # =========================================================================
+
+    def initialise_browser(self):
+        """
+        Initialise Firefox with options tuned for scraping SERVEL.
+
+        Window size is set to 1920×1080 to ensure all page elements are
+        rendered and visible to Selenium (some dropdowns only appear at
+        wider viewports).
+        """
         try:
             options = Options()
             if self.headless:
@@ -256,586 +288,733 @@ class ScraperEleccionesServel:
 
             self.driver = webdriver.Firefox(options=options)
             self.driver.set_page_load_timeout(60)
-            logging.info("✅ Navegador Firefox inicializado correctamente")
+            logging.info("✅ Firefox initialised successfully")
 
         except Exception as e:
-            logging.error(f"❌ Error al inicializar el navegador: {e}")
+            logging.error(f"❌ Failed to initialise Firefox: {e}")
             raise
 
-    def _navegar_a_servel(self):
-        """Navega al sitio de SERVEL y espera a que cargue"""
+    def _navigate_to_servel(self):
+        """
+        Open the SERVEL election results page and wait for it to fully load.
+
+        Raises
+        ------
+        Exception
+            If the page URL does not contain 'servel' after loading, indicating
+            a redirect or network failure.
+        """
         url = 'https://elecciones.servel.cl/'
-        logging.info(f"🌐 Navegando a: {url}")
+        logging.info(f"🌐 Navigating to: {url}")
 
         self.driver.get(url)
-        time.sleep(self.TIEMPO_ESPERA_CARGA)
+        time.sleep(self.WAIT_PAGE_LOAD)
 
-        # Verificar que la página cargó correctamente
         if "servel" not in self.driver.current_url.lower():
-            raise Exception("No se pudo cargar la página de SERVEL")
+            raise Exception("Could not load the SERVEL page — unexpected URL after navigation")
 
-    def _activar_filtro_division_electoral(self):
-        """Activa el filtro de 'División Electoral Chile'"""
+    def _activate_electoral_division_filter(self):
+        """
+        Click the 'División Electoral Chile' button on the SERVEL results page.
+
+        This button switches the view to the region/comuna breakdown, which is
+        required before the region and comuna dropdowns become available.
+
+        Raises
+        ------
+        Exception
+            If the button is not found or cannot be clicked within 10 seconds.
+        """
         try:
-            boton_division = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'División Electoral Chile')]"))
+            button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//button[contains(text(), 'División Electoral Chile')]")
+                )
             )
-            boton_division.click()
-            time.sleep(self.TIEMPO_ESPERA_SELECCION)
-            logging.info("✅ Filtro 'División Electoral Chile' activado")
+            button.click()
+            time.sleep(self.WAIT_DROPDOWN_SELECT)
+            logging.info("✅ 'División Electoral Chile' filter activated")
 
         except Exception as e:
-            logging.error(f"❌ No se pudo activar el filtro: {e}")
+            logging.error(f"❌ Could not activate electoral division filter: {e}")
             raise
 
-    def _obtener_regiones(self):
-        """Obtiene la lista de todas las regiones disponibles"""
+    # =========================================================================
+    # Region and comuna discovery
+    # =========================================================================
+
+    def _get_regions(self) -> list[str]:
+        """
+        Read all region names from the Región dropdown on the SERVEL page.
+
+        Returns
+        -------
+        list[str]
+            List of region name strings, excluding the placeholder option
+            ``"Seleccionar"``.
+        """
         try:
-            select_region = self.driver.find_element(By.XPATH,
-                                                     "//select[preceding-sibling::*[contains(text(), 'Región')]]")
-            selector_region = Select(select_region)
-
-            opciones_region = selector_region.options
-            regiones = [opcion.text for opcion in opciones_region if opcion.text and opcion.text != "Seleccionar"]
-
-            logging.info(f"🗺️ Se encontraron {len(regiones)} regiones")
-            return regiones
+            select_el = self.driver.find_element(
+                By.XPATH, "//select[preceding-sibling::*[contains(text(), 'Región')]]"
+            )
+            selector = Select(select_el)
+            regions = [
+                opt.text for opt in selector.options
+                if opt.text and opt.text != "Seleccionar"
+            ]
+            logging.info(f"🗺️ Found {len(regions)} regions")
+            return regions
 
         except Exception as e:
-            logging.error(f"❌ Error al obtener regiones: {e}")
+            logging.error(f"❌ Failed to retrieve regions: {e}")
             return []
 
-    def _obtener_comunas_region(self, region_nombre):
+    def _get_comunas_for_region(self, region_name: str) -> list[str]:
         """
-        Obtiene las comunas disponibles para una región específica
+        Select a region in the dropdown and return its list of comunas.
 
-        Args:
-            region_nombre (str): Nombre de la región
+        Parameters
+        ----------
+        region_name : str
+            Region name exactly as it appears in the SERVEL dropdown.
 
-        Returns:
-            list: Lista de nombres de comunas
+        Returns
+        -------
+        list[str]
+            List of comuna name strings for the selected region.
         """
         try:
-            select_region = self.driver.find_element(By.XPATH,
-                                                     "//select[preceding-sibling::*[contains(text(), 'Región')]]")
-            selector_region = Select(select_region)
-            selector_region.select_by_visible_text(region_nombre)
-            time.sleep(self.TIEMPO_ESPERA_SELECCION)
+            # Select the region first so the comuna dropdown is populated
+            region_select_el = self.driver.find_element(
+                By.XPATH, "//select[preceding-sibling::*[contains(text(), 'Región')]]"
+            )
+            Select(region_select_el).select_by_visible_text(region_name)
+            time.sleep(self.WAIT_DROPDOWN_SELECT)
 
-            select_comuna = self.driver.find_element(By.XPATH,
-                                                     "//select[preceding-sibling::*[contains(text(), 'Comuna')]]")
-            selector_comuna = Select(select_comuna)
-
-            opciones_comuna = selector_comuna.options
-            comunas = [opcion.text for opcion in opciones_comuna if opcion.text and opcion.text != "Seleccionar"]
-
+            comuna_select_el = self.driver.find_element(
+                By.XPATH, "//select[preceding-sibling::*[contains(text(), 'Comuna')]]"
+            )
+            comunas = [
+                opt.text for opt in Select(comuna_select_el).options
+                if opt.text and opt.text != "Seleccionar"
+            ]
             return comunas
 
         except Exception as e:
-            logging.error(f"❌ Error al obtener comunas para {region_nombre}: {e}")
+            logging.error(f"❌ Failed to retrieve comunas for {region_name}: {e}")
             return []
 
-    def _extraer_datos_comuna(self, comuna_nombre, region_normalizada):
+    # =========================================================================
+    # Data extraction — table parsing
+    # =========================================================================
+
+    def _extract_comuna_data(
+        self, comuna_name: str, normalised_region: str
+    ) -> tuple[dict | None, dict | None]:
         """
-        Extrae los datos electorales para una comuna específica
+        Select a comuna in the dropdown and extract its results table.
 
-        Args:
-            comuna_nombre (str): Nombre de la comuna
-            region_normalizada (str): Nombre normalizado de la región
+        Parameters
+        ----------
+        comuna_name : str
+            Raw comuna name as it appears in the SERVEL dropdown (used for
+            selection; normalisation happens in the calling method).
+        normalised_region : str
+            Already-normalised region name (used only for logging).
 
-        Returns:
-            tuple: (datos_candidatos, datos_totales) o (None, None) en caso de error
+        Returns
+        -------
+        tuple[dict | None, dict | None]
+            ``(candidate_data, totals_data)`` where each dict maps a short
+            name to ``{'votos': int, 'porcentaje': float}``.
+            Returns ``(None, None)`` on error.
         """
         try:
-            # Seleccionar la comuna
-            select_comuna = self.driver.find_element(By.XPATH,
-                                                     "//select[preceding-sibling::*[contains(text(), 'Comuna')]]")
-            selector_comuna = Select(select_comuna)
-            selector_comuna.select_by_visible_text(comuna_nombre)
+            comuna_select_el = self.driver.find_element(
+                By.XPATH, "//select[preceding-sibling::*[contains(text(), 'Comuna')]]"
+            )
+            Select(comuna_select_el).select_by_visible_text(comuna_name)
+            time.sleep(self.WAIT_TABLE_RENDER)
 
-            # Esperar a que carguen los datos
-            time.sleep(self.TIEMPO_ESPERA_DATOS)
-
-            return self._procesar_tabla_resultados()
+            return self._parse_results_table()
 
         except Exception as e:
-            logging.error(f"❌ Error al extraer datos de {comuna_nombre}: {e}")
+            logging.error(f"❌ Failed to extract data for {comuna_name}: {e}")
             return None, None
 
-    def _procesar_tabla_resultados(self):
+    def _parse_results_table(self) -> tuple[dict | None, dict | None]:
         """
-        Procesa la tabla de resultados y extrae datos de candidatos y totales
+        Locate the results table on the current page and parse every row.
 
-        Returns:
-            tuple: (dict_candidatos, dict_totales)
+        The method scans all ``<table>`` elements for one that contains
+        election-related keywords (CANDIDATO, VOTOS, BLANCO, NULO, EMITIDO)
+        and delegates each row to ``_parse_row``.
+
+        Returns
+        -------
+        tuple[dict, dict]
+            ``(candidate_data, totals_data)``
         """
         try:
-            tabla = self._encontrar_tabla_resultados()
-            if not tabla:
+            table = self._find_results_table()
+            if not table:
                 return None, None
 
-            filas = tabla.find_elements(By.TAG_NAME, "tr")
-            datos_candidatos = {}
-            datos_totales = {}
+            candidate_data: dict = {}
+            totals_data: dict = {}
 
-            for fila in filas:
-                celdas = fila.find_elements(By.TAG_NAME, "td")
-                if len(celdas) >= 3:
-                    self._procesar_fila(celdas, datos_candidatos, datos_totales)
+            for row in table.find_elements(By.TAG_NAME, "tr"):
+                cells = row.find_elements(By.TAG_NAME, "td")
+                if len(cells) >= 3:
+                    self._parse_row(cells, candidate_data, totals_data)
 
-            return datos_candidatos, datos_totales
+            return candidate_data, totals_data
 
         except Exception as e:
-            logging.error(f"❌ Error al procesar tabla: {e}")
+            logging.error(f"❌ Error parsing results table: {e}")
             return None, None
 
-    def _encontrar_tabla_resultados(self):
-        """Encuentra y retorna la tabla de resultados principales"""
+    def _find_results_table(self):
+        """
+        Wait for a ``<table>`` element containing electoral keywords to appear.
+
+        Scans all visible tables and returns the first one whose text contains
+        at least one of: CANDIDATO, VOTOS, PORCENTAJE, PARTIDO, BLANCO, NULO,
+        EMITIDO.
+
+        Returns
+        -------
+        WebElement or None
+        """
         try:
             WebDriverWait(self.driver, 15).until(
                 EC.presence_of_element_located((By.TAG_NAME, "table"))
             )
-
-            tablas = self.driver.find_elements(By.TAG_NAME, "table")
-            for tabla in tablas:
-                if tabla.is_displayed():
-                    texto = tabla.text.upper()
-                    if any(palabra in texto for palabra in
-                           ['CANDIDATO', 'VOTOS', 'PORCENTAJE', 'PARTIDO', 'BLANCO', 'NULO', 'EMITIDO']):
-                        return tabla
-
+            ELECTORAL_KEYWORDS = {
+                'CANDIDATO', 'VOTOS', 'PORCENTAJE', 'PARTIDO',
+                'BLANCO', 'NULO', 'EMITIDO'
+            }
+            for table in self.driver.find_elements(By.TAG_NAME, "table"):
+                if table.is_displayed():
+                    text_upper = table.text.upper()
+                    if any(kw in text_upper for kw in ELECTORAL_KEYWORDS):
+                        return table
             return None
 
         except TimeoutException:
-            logging.warning("⏰ Timeout esperando tabla de resultados")
+            logging.warning("⏰ Timed out waiting for results table")
             return None
 
-    def _procesar_fila(self, celdas, datos_candidatos, datos_totales):
+    def _parse_row(
+        self,
+        cells: list,
+        candidate_data: dict,
+        totals_data: dict
+    ) -> None:
         """
-        Procesa una fila individual de la tabla de resultados
+        Parse a single table row and update the appropriate data dictionary.
 
-        Args:
-            celdas: Lista de celdas de la fila
-            datos_candidatos: Diccionario para almacenar datos de candidatos
-            datos_totales: Diccionario para almacenar datos de totales
+        The SERVEL results table uses three columns: name | votos | porcentaje.
+        Row classification logic:
+        - Row contains "BLANCO"   → votos blancos total
+        - Row contains "NULO"     → votos nulos total
+        - Row contains "EMITIDO" or "TOTAL" → votos emitidos total
+        - Otherwise (and not a header/footer row) → individual candidate
+
+        Thousand-separator dots are removed before parsing vote counts.
+        Percentage commas are replaced with dots before float conversion.
+
+        Parameters
+        ----------
+        cells : list[WebElement]
+            The ``<td>`` elements of the current row (minimum 3 required).
+        candidate_data : dict
+            Accumulator for candidate-level results (modified in-place).
+        totals_data : dict
+            Accumulator for aggregate totals (modified in-place).
         """
         try:
-            nombre = celdas[0].text.strip()
-            votos_texto = celdas[1].text.strip().replace('.', '')
-            porcentaje_texto = celdas[2].text.strip().replace('%', '').replace(',', '.')
+            name = cells[0].text.strip()
+            votes_raw = cells[1].text.strip().replace('.', '')   # Remove thousands separator
+            pct_raw = cells[2].text.strip().replace('%', '').replace(',', '.')
 
-            votos = int(votos_texto) if votos_texto.isdigit() else 0
+            votes = int(votes_raw) if votes_raw.isdigit() else 0
             try:
-                porcentaje = float(porcentaje_texto) if porcentaje_texto else 0.0
+                percentage = float(pct_raw) if pct_raw else 0.0
             except ValueError:
-                porcentaje = 0.0
+                percentage = 0.0
 
-            nombre_upper = nombre.upper()
+            name_upper = name.upper()
 
-            # Identificar tipo de dato
-            if "BLANCO" in nombre_upper:
-                datos_totales['blanco'] = {'votos': votos, 'porcentaje': porcentaje}
-            elif "NULO" in nombre_upper:
-                datos_totales['nulo'] = {'votos': votos, 'porcentaje': porcentaje}
-            elif "EMITIDO" in nombre_upper or "TOTAL" in nombre_upper:
-                datos_totales['emitidos'] = {'votos': votos, 'porcentaje': porcentaje}
-            elif nombre and not any(
-                    palabra in nombre_upper for palabra in ['TOTAL', 'VOTACIÓN', 'CANDIDATO', 'PARTIDO']):
-                # Es un candidato normal
-                nombre_simplificado = self.simplificar_nombre_candidato(nombre)
-                datos_candidatos[nombre_simplificado] = {
-                    'votos': votos,
-                    'porcentaje': porcentaje
-                }
+            if "BLANCO" in name_upper:
+                totals_data['blanco'] = {'votos': votes, 'porcentaje': percentage}
+            elif "NULO" in name_upper:
+                totals_data['nulo'] = {'votos': votes, 'porcentaje': percentage}
+            elif "EMITIDO" in name_upper or "TOTAL" in name_upper:
+                totals_data['emitidos'] = {'votos': votes, 'porcentaje': percentage}
+            elif name and not any(
+                kw in name_upper for kw in {'TOTAL', 'VOTACIÓN', 'CANDIDATO', 'PARTIDO'}
+            ):
+                # Regular candidate row
+                short_name = self.simplify_candidate_name(name)
+                candidate_data[short_name] = {'votos': votes, 'porcentaje': percentage}
 
-        except (ValueError, IndexError) as e:
-            # Error silencioso para filas individuales
+        except (ValueError, IndexError):
+            # Silently skip malformed rows (headers, blank separators, etc.)
             pass
 
-    def _procesar_region(self, region_nombre):
-        """
-        Procesa todas las comunas de una región
+    # =========================================================================
+    # Region and comuna processing orchestration
+    # =========================================================================
 
-        Args:
-            region_nombre (str): Nombre de la región a procesar
+    def _process_region(self, region_name: str) -> None:
         """
-        region_normalizada = self.normalizar_nombre_region(region_nombre)
+        Iterate over all comunas in a region and extract their results.
+
+        Applies ``max_comunas`` cap if set. Logs progress at the region level.
+
+        Parameters
+        ----------
+        region_name : str
+            Raw region name from the SERVEL dropdown.
+        """
+        normalised_region = self.normalise_region_name(region_name)
 
         logging.info(f"\n{'=' * 60}")
-        logging.info(f"🏛️ PROCESANDO REGIÓN: {region_nombre} -> {region_normalizada}")
+        logging.info(f"🏛️ PROCESSING REGION: {region_name} → {normalised_region}")
         logging.info(f"{'=' * 60}")
 
-        comunas = self._obtener_comunas_region(region_nombre)
+        comunas = self._get_comunas_for_region(region_name)
         if not comunas:
-            logging.warning(f"⚠️ No se encontraron comunas para {region_nombre}")
+            logging.warning(f"⚠️ No comunas found for {region_name}")
             return
 
-        logging.info(f"📍 Se encontraron {len(comunas)} comunas en {region_normalizada}")
+        logging.info(f"📍 Found {len(comunas)} comunas in {normalised_region}")
 
-        # Limitar comunas si se especificó un máximo
+        # Honour the max_comunas cap at region level to avoid over-fetching
         if self.max_comunas and len(comunas) > self.max_comunas:
             comunas = comunas[:self.max_comunas]
-            logging.info(f"🔢 Limité a {self.max_comunas} comunas para prueba")
+            logging.info(f"🔢 Capped to {self.max_comunas} comunas for testing")
 
-        for comuna_nombre in comunas:
-            if self.max_comunas and self.comunas_procesadas >= self.max_comunas:
-                logging.info("🔚 Límite de comunas alcanzado")
+        for comuna_name in comunas:
+            if self.max_comunas and self.processed_comunas >= self.max_comunas:
+                logging.info("🔚 Global max_comunas limit reached — stopping")
                 break
+            self._process_single_comuna(comuna_name, normalised_region)
 
-            self._procesar_comuna_individual(comuna_nombre, region_normalizada)
-
-    def _procesar_comuna_individual(self, comuna_nombre, region_normalizada):
+    def _process_single_comuna(
+        self, comuna_name: str, normalised_region: str
+    ) -> None:
         """
-        Procesa una comuna individual
+        Extract and store results for one comuna.
 
-        Args:
-            comuna_nombre (str): Nombre de la comuna
-            region_normalizada (str): Nombre normalizado de la región
+        On success the data is stored in ``self.complete_data`` under the key
+        ``(normalised_comuna, normalised_region)``. A partial save is triggered
+        every 10 successfully processed comunas to guard against data loss on
+        long runs.
+
+        Parameters
+        ----------
+        comuna_name : str
+            Raw comuna name from the dropdown (used for Selenium selection).
+        normalised_region : str
+            Already-normalised region name.
         """
         try:
-            # Normalizar el nombre de la comuna
-            comuna_normalizada = self.normalizar_nombre_comuna(comuna_nombre)
-            logging.info(f"📊 Procesando: {comuna_normalizada} - {region_normalizada}")
+            normalised_comuna = self.normalise_comuna_name(comuna_name)
+            logging.info(f"📊 Processing: {normalised_comuna} — {normalised_region}")
 
-            datos_candidatos, datos_totales = self._extraer_datos_comuna(
-                comuna_nombre,  # Usar nombre original para selección
-                region_normalizada
+            candidate_data, totals_data = self._extract_comuna_data(
+                comuna_name,       # Raw name used for dropdown selection
+                normalised_region
             )
 
-            if datos_candidatos:
-                clave = (comuna_normalizada, region_normalizada)
-                self.datos_completos[clave] = {
-                    'candidatos': datos_candidatos,
-                    'totales': datos_totales
+            if candidate_data:
+                key = (normalised_comuna, normalised_region)
+                self.complete_data[key] = {
+                    'candidatos': candidate_data,
+                    'totales': totals_data
                 }
-                self.comunas_procesadas += 1
-
+                self.processed_comunas += 1
                 logging.info(
-                    f"✅ {comuna_normalizada}: {len(datos_candidatos)} candidatos - Total: {self.comunas_procesadas}")
+                    f"✅ {normalised_comuna}: {len(candidate_data)} candidates "
+                    f"— Total processed: {self.processed_comunas}"
+                )
 
-                # Guardar progreso cada 10 comunas
-                if self.comunas_procesadas % 10 == 0:
-                    self._guardar_progreso_parcial()
+                # Periodic checkpoint every 10 comunas
+                if self.processed_comunas % 10 == 0:
+                    self._save_partial_progress()
             else:
-                self.comunas_con_error += 1
-                logging.warning(f"⚠️ No se pudieron extraer datos para {comuna_normalizada}")
+                self.failed_comunas += 1
+                logging.warning(f"⚠️ No data extracted for {normalised_comuna}")
 
         except Exception as e:
-            self.comunas_con_error += 1
-            logging.error(f"❌ Error procesando {comuna_nombre}: {e}")
+            self.failed_comunas += 1
+            logging.error(f"❌ Error processing {comuna_name}: {e}")
 
-    def _crear_dataframe_final(self):
+    # =========================================================================
+    # Output generation
+    # =========================================================================
+
+    def _build_final_dataframe(self) -> pd.DataFrame:
         """
-        Crea el DataFrame final con todos los datos estructurados
+        Assemble all scraped data into a single wide-format DataFrame.
 
-        Returns:
-            pandas.DataFrame: DataFrame con todos los datos electorales
+        Each row represents one comuna. Columns are:
+        ``comuna``, ``region``,
+        then ``{candidate}_votos`` / ``{candidate}_pct`` for every candidate
+        found across all comunas, followed by the same pattern for
+        votos emitidos / votos nulos / votos blancos.
+
+        Missing values (a candidate not present in a particular comuna) are
+        filled with ``0`` / ``0.0`` to keep the schema consistent.
+
+        Returns
+        -------
+        pd.DataFrame
+            Sorted by region then comuna.
         """
-        logging.info("📈 Creando matriz completa de datos...")
+        logging.info("📈 Assembling final data matrix…")
 
-        # Recopilar todos los candidatos y totales únicos
-        todos_candidatos = set()
-        todos_totales = set()
+        # Collect the full set of candidate and total keys across all comunas
+        all_candidates: set[str] = set()
+        all_totals: set[str] = set()
 
-        for (comuna, region), datos in self.datos_completos.items():
-            if 'candidatos' in datos:
-                todos_candidatos.update(datos['candidatos'].keys())
-            if 'totales' in datos:
-                todos_totales.update(datos['totales'].keys())
+        for (_, _), data in self.complete_data.items():
+            all_candidates.update(data.get('candidatos', {}).keys())
+            all_totals.update(data.get('totales', {}).keys())
 
-        todos_candidatos = sorted(list(todos_candidatos))
-        todos_totales = sorted(list(todos_totales))
+        all_candidates_sorted = sorted(all_candidates)
+        all_totals_sorted = sorted(all_totals)
 
-        logging.info(f"👥 Candidatos únicos: {len(todos_candidatos)}")
-        logging.info(f"📋 Totales únicos: {len(todos_totales)}")
+        logging.info(f"👥 Unique candidates: {len(all_candidates_sorted)}")
+        logging.info(f"📋 Unique totals: {len(all_totals_sorted)}")
 
-        # Crear estructura de columnas
-        columnas = ['comuna', 'region']
+        # Build column list: identifiers → candidate columns → totals columns
+        columns = ['comuna', 'region']
+        for candidate in all_candidates_sorted:
+            columns += [f'{candidate}_votos', f'{candidate}_pct']
+        for total in all_totals_sorted:
+            columns += [f'{total}_votos', f'{total}_pct']
 
-        # Columnas para candidatos
-        for candidato in todos_candidatos:
-            columnas.extend([f'{candidato}_votos', f'{candidato}_pct'])
+        # Build row list
+        rows = []
+        for (comuna, region), data in self.complete_data.items():
+            row = [comuna, region]
 
-        # Columnas para totales (al final)
-        for total in todos_totales:
-            columnas.extend([f'{total}_votos', f'{total}_pct'])
+            for candidate in all_candidates_sorted:
+                entry = data.get('candidatos', {}).get(candidate)
+                row += [entry['votos'], entry['porcentaje']] if entry else [0, 0.0]
 
-        # Llenar datos
-        filas = []
-        for (comuna, region), datos in self.datos_completos.items():
-            fila = [comuna, region]
+            for total in all_totals_sorted:
+                entry = data.get('totales', {}).get(total)
+                row += [entry['votos'], entry['porcentaje']] if entry else [0, 0.0]
 
-            # Datos de candidatos
-            for candidato in todos_candidatos:
-                if 'candidatos' in datos and candidato in datos['candidatos']:
-                    fila.extend([
-                        datos['candidatos'][candidato]['votos'],
-                        datos['candidatos'][candidato]['porcentaje']
-                    ])
-                else:
-                    fila.extend([0, 0.0])
+            rows.append(row)
 
-            # Datos de totales
-            for total in todos_totales:
-                if 'totales' in datos and total in datos['totales']:
-                    fila.extend([
-                        datos['totales'][total]['votos'],
-                        datos['totales'][total]['porcentaje']
-                    ])
-                else:
-                    fila.extend([0, 0.0])
-
-            filas.append(fila)
-
-        # Crear DataFrame
-        df = pd.DataFrame(filas, columns=columnas)
+        df = pd.DataFrame(rows, columns=columns)
         df = df.sort_values(['region', 'comuna']).reset_index(drop=True)
-
         return df
 
-    def _guardar_progreso_parcial(self):
-        """Guarda el progreso actual cada cierto número de comunas"""
+    def _save_partial_progress(self) -> None:
+        """
+        Persist the current state to a timestamped CSV checkpoint file.
+
+        Called automatically every 10 comunas during the main extraction loop.
+        Allows recovery of partial results if the process is interrupted.
+        """
         try:
-            if not self.datos_completos:
+            if not self.complete_data:
                 return
 
-            df_parcial = self._crear_dataframe_final()
+            df_partial = self._build_final_dataframe()
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            nombre_archivo = f"progreso_parcial_{self.comunas_procesadas}_comunas_{timestamp}.csv"
+            filename = f"checkpoint_{self.processed_comunas}_comunas_{timestamp}.csv"
 
-            df_parcial.to_csv(nombre_archivo, index=False, encoding='utf-8')
-            logging.info(f"💾 Progreso guardado: {nombre_archivo}")
+            df_partial.to_csv(filename, index=False, encoding='utf-8')
+            logging.info(f"💾 Checkpoint saved: {filename}")
 
         except Exception as e:
-            logging.error(f"❌ Error guardando progreso parcial: {e}")
+            logging.error(f"❌ Failed to save checkpoint: {e}")
 
-    def _guardar_resultados_finales(self, df):
+    def _save_final_results(self, df: pd.DataFrame) -> None:
         """
-        Guarda los resultados finales en múltiples formatos
+        Write the final DataFrame to CSV, Excel, and a metadata text file.
 
-        Args:
-            df (pandas.DataFrame): DataFrame con los datos finales
+        Output files are named with the count of processed comunas and a
+        timestamp to avoid accidental overwrites between runs.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            The complete electoral results matrix.
         """
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            base_nombre = f"matriz_elecciones_{self.comunas_procesadas}_comunas_{timestamp}"
+            base_name = f"election_matrix_{self.processed_comunas}_comunas_{timestamp}"
 
-            # Guardar CSV
-            nombre_csv = f"{base_nombre}.csv"
-            df.to_csv(nombre_csv, index=False, encoding='utf-8')
-            logging.info(f"💾 CSV guardado: {nombre_csv}")
+            # CSV (primary output — lightweight, UTF-8)
+            csv_name = f"{base_name}.csv"
+            df.to_csv(csv_name, index=False, encoding='utf-8')
+            logging.info(f"💾 CSV saved: {csv_name}")
 
-            # Guardar Excel
+            # Excel (secondary output — for non-technical stakeholders)
             try:
-                nombre_excel = f"{base_nombre}.xlsx"
-                df.to_excel(nombre_excel, index=False)
-                logging.info(f"💾 Excel guardado: {nombre_excel}")
+                excel_name = f"{base_name}.xlsx"
+                df.to_excel(excel_name, index=False)
+                logging.info(f"💾 Excel saved: {excel_name}")
             except Exception as e:
-                logging.warning(f"⚠️ No se pudo guardar Excel: {e}")
+                logging.warning(f"⚠️ Could not save Excel file: {e}")
 
-            # Crear metadatos
-            self._crear_archivo_metadatos(df, nombre_csv)
+            # Metadata sidecar file
+            self._write_metadata_file(df, csv_name)
 
-            # Mostrar resumen
-            self._mostrar_resumen_final(df)
+            # Final summary to log
+            self._log_final_summary(df)
 
         except Exception as e:
-            logging.error(f"❌ Error guardando resultados finales: {e}")
+            logging.error(f"❌ Error saving final results: {e}")
 
-    def _crear_archivo_metadatos(self, df, nombre_archivo_csv):
+    def _write_metadata_file(self, df: pd.DataFrame, csv_filename: str) -> None:
         """
-        Crea un archivo de metadatos con información del dataset
+        Write a human-readable metadata file alongside the main CSV.
 
-        Args:
-            df (pandas.DataFrame): DataFrame con los datos
-            nombre_archivo_csv (str): Nombre del archivo CSV principal
+        The file documents the dataset schema, candidate dictionary,
+        and quick-start query examples for SQL, Python, and DAX.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            The final DataFrame (used to derive column names and counts).
+        csv_filename : str
+            Name of the primary CSV file (used to derive the metadata filename).
         """
         try:
-            nombre_metadatos = nombre_archivo_csv.replace('.csv', '_METADATOS.txt')
+            meta_filename = csv_filename.replace('.csv', '_METADATA.txt')
 
-            with open(nombre_metadatos, 'w', encoding='utf-8') as f:
-                f.write("METADATOS - MATRIZ ELECTORAL CHILE\n")
+            with open(meta_filename, 'w', encoding='utf-8') as f:
+                f.write("METADATA — CHILE ELECTORAL MATRIX\n")
                 f.write("=" * 50 + "\n\n")
-                f.write(f"Archivo de datos: {nombre_archivo_csv}\n")
-                f.write(f"Fecha generación: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                f.write(f"Total comunas: {len(df)}\n")
-                f.write(f"Total regiones: {df['region'].nunique()}\n\n")
+                f.write(f"Data file:        {csv_filename}\n")
+                f.write(f"Generated:        {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                f.write(f"Total comunas:    {len(df)}\n")
+                f.write(f"Total regions:    {df['region'].nunique()}\n\n")
 
-                f.write("ESTRUCTURA DE COLUMNAS:\n")
+                f.write("COLUMN SCHEMA\n")
                 f.write("-" * 30 + "\n")
-                f.write("comuna: Nombre de la comuna (texto)\n")
-                f.write("region: Nombre de la región (texto)\n")
+                f.write("comuna  : Comuna name — Title Case (string)\n")
+                f.write("region  : Region name — short form   (string)\n")
 
-                # Columnas de candidatos
-                columnas_candidatos = [col for col in df.columns
-                                       if col.endswith('_votos')
-                                       and not any(total in col for total in ['blanco', 'nulo', 'emitidos'])]
+                candidate_vote_cols = [
+                    c for c in df.columns
+                    if c.endswith('_votos')
+                    and not any(t in c for t in ['blanco', 'nulo', 'emitidos'])
+                ]
+                for col in candidate_vote_cols:
+                    cand = col.replace('_votos', '')
+                    f.write(f"{cand}_votos : Absolute vote count (int)\n")
+                    f.write(f"{cand}_pct   : Vote share 0–100   (float)\n")
 
-                for col in columnas_candidatos:
-                    candidato = col.replace('_votos', '')
-                    f.write(f"{candidato}_votos: Número de votos (entero)\n")
-                    f.write(f"{candidato}_pct: Porcentaje de votos (decimal)\n")
-
-                # Columnas de totales
-                columnas_totales = [col for col in df.columns
-                                    if col.endswith('_votos')
-                                    and any(total in col for total in ['blanco', 'nulo', 'emitidos'])]
-
-                for col in columnas_totales:
+                total_vote_cols = [
+                    c for c in df.columns
+                    if c.endswith('_votos')
+                    and any(t in c for t in ['blanco', 'nulo', 'emitidos'])
+                ]
+                for col in total_vote_cols:
                     total = col.replace('_votos', '')
-                    f.write(f"{total}_votos: Número de votos (entero)\n")
-                    f.write(f"{total}_pct: Porcentaje de votos (decimal)\n")
+                    f.write(f"{total}_votos : Absolute count (int)\n")
+                    f.write(f"{total}_pct   : Percentage 0–100 (float)\n")
 
-                f.write("\nDICCIONARIO DE CANDIDATOS:\n")
+                f.write("\nCANDIDATE DICTIONARY\n")
                 f.write("-" * 30 + "\n")
-                for nombre_largo, nombre_corto in self.MAPEO_CANDIDATOS.items():
-                    f.write(f"{nombre_largo} -> {nombre_corto}\n")
+                for long_name, short_name in self.CANDIDATE_MAP.items():
+                    f.write(f"{long_name} → {short_name}\n")
 
-                f.write("\nUSO PARA ANÁLISIS:\n")
+                f.write("\nQUICK-START QUERIES\n")
                 f.write("-" * 30 + "\n")
-                f.write("SQL: SELECT comuna, parisi_votos FROM tabla WHERE region = 'Metropolitana';\n")
-                f.write("Python: df['parisi_pct'].corr(df['kast_pct'])\n")
-                f.write("DAX: CALCULATE(SUM([parisi_votos]), [region] = 'Metropolitana')\n")
+                f.write("SQL    : SELECT comuna, parisi_votos FROM tabla WHERE region = 'Metropolitana';\n")
+                f.write("Python : df['parisi_pct'].corr(df['kast_pct'])\n")
+                f.write("DAX    : CALCULATE(SUM([parisi_votos]), [region] = 'Metropolitana')\n")
 
-            logging.info(f"📄 Metadatos guardados: {nombre_metadatos}")
+            logging.info(f"📄 Metadata saved: {meta_filename}")
 
         except Exception as e:
-            logging.error(f"❌ Error creando metadatos: {e}")
+            logging.error(f"❌ Failed to write metadata file: {e}")
 
-    def _mostrar_resumen_final(self, df):
-        """Muestra un resumen final del proceso de extracción"""
+    def _log_final_summary(self, df: pd.DataFrame) -> None:
+        """Log a concise extraction summary once all data has been saved."""
+        candidate_vote_cols = [
+            c for c in df.columns
+            if c.endswith('_votos')
+            and not any(t in c for t in ['blanco', 'nulo', 'emitidos'])
+        ]
+        total_vote_cols = [
+            c for c in df.columns
+            if c.endswith('_votos')
+            and any(t in c for t in ['blanco', 'nulo', 'emitidos'])
+        ]
+
         logging.info(f"\n{'=' * 80}")
-        logging.info("🎊 EXTRACCIÓN COMPLETADA")
+        logging.info("🎊 EXTRACTION COMPLETE")
         logging.info(f"{'=' * 80}")
-        logging.info(f"✅ Comunas procesadas exitosamente: {self.comunas_procesadas}")
-        logging.info(f"❌ Comunas con error: {self.comunas_con_error}")
-        logging.info(f"📊 Total de comunas en el dataset: {len(df)}")
-        logging.info(f"🗺️ Regiones procesadas: {df['region'].nunique()}")
+        logging.info(f"✅ Comunas processed successfully : {self.processed_comunas}")
+        logging.info(f"❌ Comunas with errors           : {self.failed_comunas}")
+        logging.info(f"📊 Comunas in final dataset      : {len(df)}")
+        logging.info(f"🗺️ Regions in final dataset      : {df['region'].nunique()}")
+        logging.info(f"👥 Candidates in dataset         : {len(candidate_vote_cols)}")
+        logging.info(f"📋 Aggregate total metrics       : {len(total_vote_cols)}")
+        logging.info(f"📑 Total columns                 : {len(df.columns)}")
 
-        # Contar candidatos y totales
-        columnas_candidatos = [col for col in df.columns
-                               if col.endswith('_votos')
-                               and not any(total in col for total in ['blanco', 'nulo', 'emitidos'])]
-        columnas_totales = [col for col in df.columns
-                            if col.endswith('_votos')
-                            and any(total in col for total in ['blanco', 'nulo', 'emitidos'])]
+        logging.info(f"\n📈 Comunas per region:")
+        for region, count in df['region'].value_counts().sort_index().items():
+            logging.info(f"   {region}: {count} comunas")
 
-        logging.info(f"👥 Candidatos en el dataset: {len(columnas_candidatos)}")
-        logging.info(f"📋 Métricas de totales: {len(columnas_totales)}")
-        logging.info(f"📑 Columnas totales: {len(df.columns)}")
+    # =========================================================================
+    # Main entry point
+    # =========================================================================
 
-        # Mostrar distribución por región
-        logging.info(f"\n📈 Distribución por región:")
-        distribucion = df['region'].value_counts().sort_index()
-        for region, count in distribucion.items():
-            logging.info(f"  {region}: {count} comunas")
-
-    def ejecutar_extraccion(self):
+    def run_extraction(self) -> pd.DataFrame:
         """
-        Método principal que ejecuta todo el proceso de extracción
+        Execute the full extraction pipeline from start to finish.
 
-        Returns:
-            pandas.DataFrame: DataFrame con todos los datos extraídos
+        Steps
+        -----
+        1. Initialise Firefox.
+        2. Navigate to SERVEL and activate the electoral division filter.
+        3. Enumerate all regions.
+        4. For each region, enumerate and process all comunas.
+        5. Build the final DataFrame and save outputs (CSV, Excel, metadata).
+        6. Close the browser.
+
+        Returns
+        -------
+        pd.DataFrame
+            The complete electoral results matrix.
+
+        Raises
+        ------
+        Exception
+            Re-raises any unrecoverable error after logging it.
         """
-        tiempo_inicio = time.time()
+        start_time = time.time()
 
         try:
-            logging.info("🚀 Iniciando extracción de datos electorales...")
-            self.inicializar_navegador()
+            logging.info("🚀 Starting electoral data extraction…")
+            self.initialise_browser()
 
-            # Flujo principal de extracción
-            self._navegar_a_servel()
-            self._activar_filtro_division_electoral()
+            self._navigate_to_servel()
+            self._activate_electoral_division_filter()
 
-            regiones = self._obtener_regiones()
-            if not regiones:
-                raise Exception("No se pudieron obtener las regiones")
+            regions = self._get_regions()
+            if not regions:
+                raise Exception("Could not retrieve any regions from SERVEL")
 
-            for region in regiones:
-                if self.max_comunas and self.comunas_procesadas >= self.max_comunas:
+            for region in regions:
+                if self.max_comunas and self.processed_comunas >= self.max_comunas:
                     break
-                self._procesar_region(region)
+                self._process_region(region)
 
-            # Crear y guardar resultados
-            df_final = self._crear_dataframe_final()
-            self._guardar_resultados_finales(df_final)
+            final_df = self._build_final_dataframe()
+            self._save_final_results(final_df)
 
-            tiempo_total = time.time() - tiempo_inicio
-            logging.info(f"⏱️ Tiempo total de ejecución: {tiempo_total / 60:.2f} minutos")
+            elapsed_minutes = (time.time() - start_time) / 60
+            logging.info(f"⏱️ Total run time: {elapsed_minutes:.2f} minutes")
 
-            return df_final
+            return final_df
 
         except Exception as e:
-            logging.error(f"💥 Error crítico en la extracción: {e}")
+            logging.error(f"💥 Critical error during extraction: {e}")
             raise
 
         finally:
             if self.driver:
                 self.driver.quit()
-                logging.info("🔚 Navegador cerrado")
+                logging.info("🔚 Browser closed")
 
 
-def main():
-    """Función principal con manejo de argumentos de línea de comandos"""
-    parser = argparse.ArgumentParser(description='Web Scraper para Resultados Electorales Chilenos')
-    parser.add_argument('--headless', action='store_true', help='Ejecutar en modo headless')
-    parser.add_argument('--comunas', type=int, help='Límite de comunas a procesar')
-    parser.add_argument('--verbose', action='store_true', help='Logging más detallado')
+# =============================================================================
+# CLI entry point
+# =============================================================================
+
+def main() -> int:
+    """
+    Parse command-line arguments and run the scraper.
+
+    Arguments
+    ---------
+    --headless
+        Run Firefox without a visible window.
+    --comunas N
+        Limit extraction to the first N comunas (useful for quick tests).
+    --verbose
+        Set logging level to DEBUG for detailed output.
+
+    Returns
+    -------
+    int
+        Exit code: 0 on success, 1 on error or user interruption.
+    """
+    parser = argparse.ArgumentParser(
+        description='Web scraper for Chilean electoral results (SERVEL)'
+    )
+    parser.add_argument(
+        '--headless', action='store_true',
+        help='Run Firefox in headless mode (no visible window)'
+    )
+    parser.add_argument(
+        '--comunas', type=int,
+        help='Maximum number of comunas to process (omit for all)'
+    )
+    parser.add_argument(
+        '--verbose', action='store_true',
+        help='Enable DEBUG-level logging'
+    )
 
     args = parser.parse_args()
 
-    # Configurar nivel de logging
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    # Mostrar información inicial
     print("\n" + "=" * 80)
-    print("🌐 WEB SCRAPER - RESULTADOS ELECTORALES CHILENOS")
+    print("🌐 WEB SCRAPER — CHILEAN ELECTORAL RESULTS (SERVEL)")
     print("=" * 80)
-    print("📊 Extracción automática desde SERVEL")
-    print("💾 Datos estructurados para SQL/Python/DAX")
-    print("🏙️ Nombres de comunas en formato título (Ej: 'Arica' en lugar de 'ARICA')")
+    print("📊 Automated extraction · structured output for SQL / Python / DAX")
+    print("🏙️ Comuna names normalised to Title Case (e.g. 'Arica' not 'ARICA')")
     print("=" * 80)
 
     if args.comunas:
-        print(f"🔢 Modo prueba: {args.comunas} comunas")
+        print(f"🔢 Test mode: processing up to {args.comunas} comunas")
     if args.headless:
-        print("👻 Ejecutando en modo headless")
-
+        print("👻 Running in headless mode")
     print("=" * 80)
 
     try:
-        # Crear y ejecutar scraper
-        scraper = ScraperEleccionesServel(
+        scraper = ServelElectionScraper(
             headless=args.headless,
             max_comunas=args.comunas
         )
+        df_results = scraper.run_extraction()
 
-        df_resultados = scraper.ejecutar_extraccion()
+        print("\n🎉 EXTRACTION COMPLETED SUCCESSFULLY")
+        print("📁 Files generated:")
+        print(f"   • CSV  — {len(df_results)} comunas")
+        print("   • Excel — same data, .xlsx format")
+        print("   • Metadata sidecar — schema + candidate dictionary")
+        print("   • Log file — scraper_elecciones.log")
 
-        print("\n🎉 EXTRACCIÓN COMPLETADA EXITOSAMENTE")
-        print(f"📁 Archivos generados:")
-        print(f"   • CSV con {len(df_resultados)} comunas")
-        print(f"   • Excel con los mismos datos")
-        print(f"   • Archivo de metadatos")
-        print(f"   • Log de ejecución (scraper_elecciones.log)")
-
-        # Mostrar ejemplos de nombres normalizados
-        print(f"\n🏙️ Ejemplos de nombres de comunas normalizados:")
-        comunas_ejemplo = df_resultados['comuna'].head(5).tolist()
-        for comuna in comunas_ejemplo:
+        print("\n🏙️ Sample of normalised comuna names:")
+        for comuna in df_results['comuna'].head(5).tolist():
             print(f"   • {comuna}")
 
         return 0
 
     except KeyboardInterrupt:
-        print("\n⏹️ Ejecución interrumpida por el usuario")
+        print("\n⏹️ Interrupted by user")
         return 1
     except Exception as e:
-        print(f"\n💥 Error: {e}")
+        print(f"\n💥 Fatal error: {e}")
         return 1
 
 
 if __name__ == "__main__":
-    exit_code = main()
-    sys.exit(exit_code)
+    sys.exit(main())
