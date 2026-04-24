@@ -27,7 +27,7 @@ Workflow:
 
 Author: Alfonso Droguett
 Date: November 2025
-Repository: https://github.com/adroguetth/Elecciones_Chile_PrimeraVuelta_2025/tree/main/First%20round/Web%20Scraper
+Repository: https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/tree/main/First%20round/1-Web%20Scraper
 """
 
 
