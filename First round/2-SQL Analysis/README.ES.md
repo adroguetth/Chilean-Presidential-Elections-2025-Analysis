@@ -12,6 +12,7 @@ El análisis cubre el universo completo de **346 comunas** en las 16 regiones de
 
 ```
 SQL Analysis/
+├── README.md                          ← documentación en ingles
 ├── README.es.md                       ← este archivo
 ├── queries/
 │   ├── 01_participation_stats.sql     ← métricas de participación nacional
