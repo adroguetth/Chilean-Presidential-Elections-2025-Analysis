@@ -15,6 +15,7 @@ The analysis covers the complete universe of **346 communes** across all 16 Chil
 ```
 SQL Analysis/
 ├── README.md                          ← this file
+├── README.ES.md                       ← documentation in Spanish
 ├── queries/
 │   ├── 01_participation_stats.sql     ← national turnout metrics
 │   ├── 02_national_results.sql        ← vote share by candidate
