@@ -1,5 +1,7 @@
 # Análisis SQL — Elección Presidencial Chile 2025 (Primera Vuelta)
 
+**Looking for the English version?** → [README.md](https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/blob/main/First%20round/2-SQL%20Analysis/README.md)
+
 ## Descripción General
 
 Esta carpeta contiene la capa analítica SQL completa del proyecto. Todas las consultas se ejecutan sobre una única tabla (`resultados_elecciones`) cargada con los datos extraídos por el Web Scraper, y están estructuradas mediante CTEs para garantizar legibilidad, modularidad y auditabilidad.
