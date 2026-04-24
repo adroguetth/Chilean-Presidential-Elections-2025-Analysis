@@ -348,7 +348,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](https:/
 
 ## Author
 
-**Alfonso Droguett** — Data Analyst
+**Alfonso Droguett**
 
 - 🔗 [LinkedIn](https://www.linkedin.com/in/adroguetth/)
 - 🌐 [Portfolio](https://www.adroguett-portfolio.cl/)
@@ -356,4 +356,4 @@ This project is licensed under the **MIT License** — see the [LICENSE](https:/
 
 ---
 
-_Last updated: November 2025_
+_Last updated: April 2026_
