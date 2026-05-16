@@ -1,0 +1,17 @@
+﻿region_code,region,macrozone,macrozone_order,region_order
+15,Arica y Parinacota,Norte Grande,1,1
+1,Tarapacá,Norte Grande,1,2
+2,Antofagasta,Norte Grande,1,3
+3,Atacama,Norte Chico,2,4
+4,Coquimbo,Norte Chico,2,5
+5,Valparaíso,Centro,3,6
+13,Metropolitana,Centro,3,7
+6,Libertador,Centro,3,8
+7,Maule,Centro,3,9
+16,Ñuble,Centro Sur,4,10
+8,Biobío,Centro Sur,4,11
+9,La Araucanía,Centro Sur,4,12
+14,Los Ríos,Sur,5,13
+10,Los Lagos,Sur,5,14
+11,Aysén,Patagonia,6,15
+12,Magallanes,Patagonia,6,16
