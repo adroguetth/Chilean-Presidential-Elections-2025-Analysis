@@ -1,0 +1,348 @@
+﻿comuna,region,poblacion,pobl_hombres,pobl_mujeres,razon_hom_mujer
+camarones,Arica y Parinacota,861.0,430.0,431.0,99.8
+putre,Arica y Parinacota,1547.0,846.0,701.0,120.7
+general lagos,Arica y Parinacota,508.0,261.0,247.0,105.7
+iquique,Tarapacá,199587.0,98413.0,101174.0,97.3
+alto hospicio,Tarapacá,142086.0,70649.0,71437.0,98.9
+pozo almonte,Tarapacá,16878.0,8667.0,8211.0,105.6
+camina,Tarapacá,1335.0,648.0,687.0,94.3
+colchane,Tarapacá,790.0,389.0,401.0,97.0
+huara,Tarapacá,2858.0,1484.0,1374.0,108.0
+pica,Tarapacá,6272.0,3093.0,3179.0,97.3
+antofagasta,Antofagasta,401096.0,197979.0,203117.0,97.5
+mejillones,Antofagasta,14084.0,7021.0,7063.0,99.4
+sierra gorda,Antofagasta,1472.0,707.0,765.0,92.4
+taltal,Antofagasta,12097.0,6063.0,6034.0,100.5
+calama,Antofagasta,166334.0,82269.0,84065.0,97.9
+ollague,Antofagasta,256.0,122.0,134.0,91.0
+san pedro de atacama,Antofagasta,9843.0,4768.0,5075.0,94.0
+tocopilla,Antofagasta,25400.0,12589.0,12811.0,98.3
+maria elena,Antofagasta,4834.0,2477.0,2357.0,105.1
+copiapo,Atacama,168831.0,83536.0,85295.0,97.9
+caldera,Atacama,18805.0,9396.0,9409.0,99.9
+tierra amarilla,Atacama,11846.0,6070.0,5776.0,105.1
+chanaral,Atacama,12345.0,6219.0,6126.0,101.5
+diego de almagro,Atacama,11397.0,5672.0,5725.0,99.1
+vallenar,Atacama,54222.0,26541.0,27681.0,95.9
+alto del carmen,Atacama,4788.0,2454.0,2334.0,105.1
+freirina,Atacama,7577.0,3743.0,3834.0,97.6
+huasco,Atacama,9369.0,4632.0,4737.0,97.8
+la serena,Coquimbo,250141.0,120407.0,129734.0,92.8
+coquimbo,Coquimbo,263719.0,127926.0,135793.0,94.2
+andacollo,Coquimbo,11566.0,5800.0,5766.0,100.6
+la higuera,Coquimbo,4335.0,2299.0,2036.0,112.9
+paihuano,Coquimbo,4649.0,2310.0,2339.0,98.8
+vicuna,Coquimbo,28047.0,13738.0,14309.0,96.0
+illapel,Coquimbo,32009.0,15548.0,16461.0,94.5
+canela,Coquimbo,9639.0,4869.0,4770.0,102.1
+los vilos,Coquimbo,22879.0,11281.0,11598.0,97.3
+salamanca,Coquimbo,27823.0,13772.0,14051.0,98.0
+ovalle,Coquimbo,118696.0,57311.0,61385.0,93.4
+combarbala,Coquimbo,12954.0,6305.0,6649.0,94.8
+monte patria,Coquimbo,29997.0,14703.0,15294.0,96.1
+punitaqui,Coquimbo,12076.0,5975.0,6101.0,97.9
+rio hurtado,Coquimbo,4334.0,2153.0,2181.0,98.7
+valparaiso,Valparaíso,284938.0,138494.0,146444.0,94.6
+casablanca,Valparaíso,29876.0,14582.0,15294.0,95.3
+concon,Valparaíso,48294.0,23153.0,25141.0,92.1
+juan fernandez,Valparaíso,904.0,458.0,446.0,102.7
+puchuncavi,Valparaíso,22539.0,11156.0,11383.0,98.0
+quintero,Valparaíso,35754.0,17507.0,18247.0,95.9
+vina del mar,Valparaíso,334871.0,158878.0,175993.0,90.3
+isla de pascua,Valparaíso,4800.0,2351.0,2449.0,96.0
+los andes,Valparaíso,63440.0,30469.0,32971.0,92.4
+calle larga,Valparaíso,16597.0,8139.0,8458.0,96.2
+rinconada,Valparaíso,11855.0,5851.0,6004.0,97.5
+san esteban,Valparaíso,20112.0,9835.0,10277.0,95.7
+la ligua,Valparaíso,39270.0,19171.0,20099.0,95.4
+cabildo,Valparaíso,20015.0,9860.0,10155.0,97.1
+papudo,Valparaíso,7561.0,3766.0,3795.0,99.2
+petorca,Valparaíso,10206.0,5030.0,5176.0,97.2
+zapallar,Valparaíso,7980.0,3902.0,4078.0,95.7
+quillota,Valparaíso,96753.0,46621.0,50132.0,93.0
+calera,Valparaíso,50631.0,24513.0,26118.0,93.9
+hijuelas,Valparaíso,19286.0,9518.0,9768.0,97.4
+la cruz,Valparaíso,24939.0,11993.0,12946.0,92.6
+nogales,Valparaíso,22136.0,10849.0,11287.0,96.1
+san antonio,Valparaíso,96770.0,46972.0,49798.0,94.3
+algarrobo,Valparaíso,16076.0,7673.0,8403.0,91.3
+cartagena,Valparaíso,24599.0,12043.0,12556.0,95.9
+el quisco,Valparaíso,18971.0,9088.0,9883.0,92.0
+el tabo,Valparaíso,16260.0,7915.0,8345.0,94.8
+santo domingo,Valparaíso,13171.0,6437.0,6734.0,95.6
+san felipe,Valparaíso,80413.0,38921.0,41492.0,93.8
+catemu,Valparaíso,13760.0,6728.0,7032.0,95.7
+llaillay,Valparaíso,25484.0,12538.0,12946.0,96.8
+panquehue,Valparaíso,7269.0,3582.0,3687.0,97.2
+putaendo,Valparaíso,17336.0,8531.0,8805.0,96.9
+santa maria,Valparaíso,15134.0,7325.0,7809.0,93.8
+quilpue,Valparaíso,162559.0,77149.0,85410.0,90.3
+limache,Valparaíso,56145.0,27348.0,28797.0,95.0
+olmue,Valparaíso,19778.0,9668.0,10110.0,95.6
+villa alemana,Valparaíso,139571.0,65629.0,73942.0,88.8
+santiago,Metropolitana de Santiago,438856.0,223237.0,215619.0,103.5
+cerrillos,Metropolitana de Santiago,85041.0,41216.0,43825.0,94.0
+cerro navia,Metropolitana de Santiago,127250.0,62329.0,64921.0,96.0
+conchali,Metropolitana de Santiago,121587.0,59122.0,62465.0,94.6
+el bosque,Metropolitana de Santiago,155257.0,75720.0,79537.0,95.2
+estacion central,Metropolitana de Santiago,181049.0,88630.0,92419.0,95.9
+huechuraba,Metropolitana de Santiago,101808.0,49479.0,52329.0,94.6
+independencia,Metropolitana de Santiago,116943.0,56916.0,60027.0,94.8
+la cisterna,Metropolitana de Santiago,103157.0,49154.0,54003.0,91.0
+la florida,Metropolitana de Santiago,374836.0,178461.0,196375.0,90.9
+la granja,Metropolitana de Santiago,112022.0,54758.0,57264.0,95.6
+la pintana,Metropolitana de Santiago,175421.0,85240.0,90181.0,94.5
+la reina,Metropolitana de Santiago,89870.0,42260.0,47610.0,88.8
+las condes,Metropolitana de Santiago,296134.0,137984.0,158150.0,87.2
+lo barnechea,Metropolitana de Santiago,112620.0,53609.0,59011.0,90.8
+lo espejo,Metropolitana de Santiago,87295.0,43095.0,44200.0,97.5
+lo prado,Metropolitana de Santiago,91290.0,44300.0,46990.0,94.3
+macul,Metropolitana de Santiago,123800.0,58479.0,65321.0,89.5
+maipu,Metropolitana de Santiago,503635.0,240903.0,262732.0,91.7
+nunoa,Metropolitana de Santiago,241467.0,111613.0,129854.0,86.0
+pedro aguirre cerda,Metropolitana de Santiago,96062.0,47073.0,48989.0,96.1
+penalolen,Metropolitana de Santiago,236478.0,114260.0,122218.0,93.5
+providencia,Metropolitana de Santiago,143974.0,67329.0,76645.0,87.8
+pudahuel,Metropolitana de Santiago,227820.0,109673.0,118147.0,92.8
+quilicura,Metropolitana de Santiago,205624.0,99649.0,105975.0,94.0
+quinta normal,Metropolitana de Santiago,129351.0,63130.0,66221.0,95.3
+recoleta,Metropolitana de Santiago,154615.0,76020.0,78595.0,96.7
+renca,Metropolitana de Santiago,143622.0,69985.0,73637.0,95.0
+san joaquin,Metropolitana de Santiago,95602.0,45983.0,49619.0,92.7
+san miguel,Metropolitana de Santiago,150829.0,71229.0,79600.0,89.5
+san ramon,Metropolitana de Santiago,76002.0,37417.0,38585.0,97.0
+vitacura,Metropolitana de Santiago,86420.0,39914.0,46506.0,85.8
+puente alto,Metropolitana de Santiago,568086.0,273928.0,294158.0,93.1
+pirque,Metropolitana de Santiago,29060.0,14399.0,14661.0,98.2
+san jose de maipo,Metropolitana de Santiago,17441.0,8674.0,8767.0,98.9
+colina,Metropolitana de Santiago,173293.0,86925.0,86368.0,100.6
+lampa,Metropolitana de Santiago,145160.0,72328.0,72832.0,99.3
+tiltil,Metropolitana de Santiago,19742.0,9940.0,9802.0,101.4
+san bernardo,Metropolitana de Santiago,306371.0,148696.0,157675.0,94.3
+buin,Metropolitana de Santiago,116969.0,56564.0,60405.0,93.6
+calera de tango,Metropolitana de Santiago,25491.0,12607.0,12884.0,97.9
+paine,Metropolitana de Santiago,78828.0,38873.0,39955.0,97.3
+melipilla,Metropolitana de Santiago,136325.0,66759.0,69566.0,96.0
+alhue,Metropolitana de Santiago,7768.0,3863.0,3905.0,98.9
+curacavi,Metropolitana de Santiago,35165.0,17226.0,17939.0,96.0
+maria pinto,Metropolitana de Santiago,15352.0,7559.0,7793.0,97.0
+san pedro,Metropolitana de Santiago,11108.0,5696.0,5412.0,105.2
+talagante,Metropolitana de Santiago,76429.0,37488.0,38941.0,96.3
+el monte,Metropolitana de Santiago,37497.0,18347.0,19150.0,95.8
+isla de maipo,Metropolitana de Santiago,39274.0,19401.0,19873.0,97.6
+padre hurtado,Metropolitana de Santiago,81243.0,39781.0,41462.0,95.9
+penaflor,Metropolitana de Santiago,94402.0,45612.0,48790.0,93.5
+rancagua,Libertador General Bernardo O'Higgins,257744.0,125172.0,132572.0,94.4
+codegua,Libertador General Bernardo O'Higgins,13955.0,6885.0,7070.0,97.4
+coinco,Libertador General Bernardo O'Higgins,7916.0,3906.0,4010.0,97.4
+coltauco,Libertador General Bernardo O'Higgins,21373.0,10653.0,10720.0,99.4
+donihue,Libertador General Bernardo O'Higgins,21925.0,10706.0,11219.0,95.4
+graneros,Libertador General Bernardo O'Higgins,35938.0,17613.0,18325.0,96.1
+las cabras,Libertador General Bernardo O'Higgins,27554.0,13900.0,13654.0,101.8
+machali,Libertador General Bernardo O'Higgins,60875.0,29507.0,31368.0,94.1
+malloa,Libertador General Bernardo O'Higgins,13882.0,6950.0,6932.0,100.3
+mostazal,Libertador General Bernardo O'Higgins,27394.0,13521.0,13873.0,97.5
+olivar,Libertador General Bernardo O'Higgins,13901.0,6870.0,7031.0,97.7
+peumo,Libertador General Bernardo O'Higgins,14243.0,7115.0,7128.0,99.8
+pichidegua,Libertador General Bernardo O'Higgins,20363.0,10152.0,10211.0,99.4
+quinta de tilcoco,Libertador General Bernardo O'Higgins,13558.0,6648.0,6910.0,96.2
+rengo,Libertador General Bernardo O'Higgins,63620.0,30925.0,32695.0,94.6
+requinoa,Libertador General Bernardo O'Higgins,29508.0,14588.0,14920.0,97.8
+san vicente,Libertador General Bernardo O'Higgins,49559.0,24340.0,25219.0,96.5
+pichilemu,Libertador General Bernardo O'Higgins,19847.0,9744.0,10103.0,96.4
+la estrella,Libertador General Bernardo O'Higgins,4609.0,2343.0,2266.0,103.4
+litueche,Libertador General Bernardo O'Higgins,8852.0,4443.0,4409.0,100.8
+marchihue,Libertador General Bernardo O'Higgins,8715.0,4347.0,4368.0,99.5
+navidad,Libertador General Bernardo O'Higgins,8885.0,4521.0,4364.0,103.6
+paredones,Libertador General Bernardo O'Higgins,7228.0,3667.0,3561.0,103.0
+san fernando,Libertador General Bernardo O'Higgins,75585.0,36247.0,39338.0,92.1
+chepica,Libertador General Bernardo O'Higgins,15668.0,7737.0,7931.0,97.6
+chimbarongo,Libertador General Bernardo O'Higgins,37258.0,18467.0,18791.0,98.3
+lolol,Libertador General Bernardo O'Higgins,7791.0,3926.0,3865.0,101.6
+nancagua,Libertador General Bernardo O'Higgins,18723.0,9222.0,9501.0,97.1
+palmilla,Libertador General Bernardo O'Higgins,13060.0,6547.0,6513.0,100.5
+peralillo,Libertador General Bernardo O'Higgins,12493.0,6211.0,6282.0,98.9
+placilla,Libertador General Bernardo O'Higgins,9438.0,4739.0,4699.0,100.9
+pumanque,Libertador General Bernardo O'Higgins,4559.0,2299.0,2260.0,101.7
+santa cruz,Libertador General Bernardo O'Higgins,41209.0,20037.0,21172.0,94.6
+talca,Maule,232131.0,110996.0,121135.0,91.6
+constitucion,Maule,47004.0,23154.0,23850.0,97.1
+curepto,Maule,9519.0,4876.0,4643.0,105.0
+empedrado,Maule,3990.0,2046.0,1944.0,105.2
+maule,Maule,61081.0,29505.0,31576.0,93.4
+pelarco,Maule,9229.0,4592.0,4637.0,99.0
+pencahue,Maule,9181.0,4641.0,4540.0,102.2
+rio claro,Maule,14276.0,7195.0,7081.0,101.6
+san clemente,Maule,47380.0,23424.0,23956.0,97.8
+san rafael,Maule,11230.0,5552.0,5678.0,97.8
+cauquenes,Maule,42798.0,20295.0,22503.0,90.2
+chanco,Maule,9446.0,4698.0,4748.0,98.9
+pelluhue,Maule,8578.0,4158.0,4420.0,94.1
+curico,Maule,159968.0,77105.0,82863.0,93.1
+hualane,Maule,10775.0,5392.0,5383.0,100.2
+licanten,Maule,6892.0,3372.0,3520.0,95.8
+molina,Maule,48949.0,23906.0,25043.0,95.5
+rauco,Maule,11266.0,5613.0,5653.0,99.3
+romeral,Maule,17233.0,8448.0,8785.0,96.2
+sagrada familia,Maule,19427.0,9751.0,9676.0,100.8
+teno,Maule,30113.0,14982.0,15131.0,99.0
+vichuquen,Maule,4716.0,2426.0,2290.0,105.9
+linares,Maule,96744.0,46158.0,50586.0,91.2
+colbun,Maule,22637.0,11087.0,11550.0,96.0
+longavi,Maule,33299.0,16598.0,16701.0,99.4
+parral,Maule,45323.0,21848.0,23475.0,93.1
+retiro,Maule,22310.0,11082.0,11228.0,98.7
+san javier,Maule,49559.0,23732.0,25827.0,91.9
+villa alegre,Maule,17919.0,8616.0,9303.0,92.6
+yerbas buenas,Maule,20035.0,10007.0,10028.0,99.8
+chillan,Ñuble,190382.0,89482.0,100900.0,88.7
+bulnes,Ñuble,23863.0,11472.0,12391.0,92.6
+chillan viejo,Ñuble,32688.0,15486.0,17202.0,90.0
+el carmen,Ñuble,13186.0,6548.0,6638.0,98.6
+pemuco,Ñuble,8930.0,4416.0,4514.0,97.8
+pinto,Ñuble,12502.0,6120.0,6382.0,95.9
+quillon,Ñuble,19165.0,9375.0,9790.0,95.8
+san ignacio,Ñuble,17405.0,8556.0,8849.0,96.7
+yungay,Ñuble,18680.0,9232.0,9448.0,97.7
+quirihue,Ñuble,11746.0,5685.0,6061.0,93.8
+cobquecura,Ñuble,5495.0,2693.0,2802.0,96.1
+coelemu,Ñuble,15895.0,7760.0,8135.0,95.4
+ninhue,Ñuble,5763.0,2831.0,2932.0,96.6
+portezuelo,Ñuble,5203.0,2588.0,2615.0,99.0
+ranquil,Ñuble,6508.0,3197.0,3311.0,96.6
+trehuaco,Ñuble,6124.0,3069.0,3055.0,100.5
+san carlos,Ñuble,55847.0,26745.0,29102.0,91.9
+coihueco,Ñuble,29766.0,14681.0,15085.0,97.3
+niquen,Ñuble,12797.0,6416.0,6381.0,100.5
+san fabian,Ñuble,5245.0,2569.0,2676.0,96.0
+san nicolas,Ñuble,15099.0,7516.0,7583.0,99.1
+concepcion,Biobío,230375.0,110985.0,119390.0,93.0
+coronel,Biobío,123648.0,59274.0,64374.0,92.1
+chiguayante,Biobío,85822.0,40464.0,45358.0,89.2
+florida,Biobío,12958.0,6455.0,6503.0,99.3
+hualqui,Biobío,25795.0,12388.0,13407.0,92.4
+lota,Biobío,39980.0,19342.0,20638.0,93.7
+penco,Biobío,48971.0,23370.0,25601.0,91.3
+san pedro de la paz,Biobío,150992.0,72262.0,78730.0,91.8
+santa juana,Biobío,14947.0,7203.0,7744.0,93.0
+talcahuano,Biobío,147322.0,70548.0,76774.0,91.9
+tome,Biobío,56907.0,26964.0,29943.0,90.1
+hualpen,Biobío,87731.0,41521.0,46210.0,89.9
+lebu,Biobío,25246.0,12333.0,12913.0,95.5
+arauco,Biobío,37163.0,18128.0,19035.0,95.2
+canete,Biobío,34640.0,16602.0,18038.0,92.0
+contulmo,Biobío,5905.0,2925.0,2980.0,98.2
+curanilahue,Biobío,31119.0,15127.0,15992.0,94.6
+los alamos,Biobío,21950.0,10581.0,11369.0,93.1
+tirua,Biobío,10208.0,5023.0,5185.0,96.9
+los angeles,Biobío,219441.0,105436.0,114005.0,92.5
+antuco,Biobío,4373.0,2125.0,2248.0,94.5
+cabrero,Biobío,31256.0,15264.0,15992.0,95.4
+laja,Biobío,23706.0,11451.0,12255.0,93.4
+mulchen,Biobío,29036.0,14093.0,14943.0,94.3
+nacimiento,Biobío,26140.0,12790.0,13350.0,95.8
+negrete,Biobío,10723.0,5273.0,5450.0,96.8
+quilaco,Biobío,4440.0,2210.0,2230.0,99.1
+quilleco,Biobío,9700.0,4826.0,4874.0,99.0
+san rosendo,Biobío,3575.0,1753.0,1822.0,96.2
+santa barbara,Biobío,14075.0,6847.0,7228.0,94.7
+tucapel,Biobío,15729.0,7568.0,8161.0,92.7
+yumbel,Biobío,23170.0,11359.0,11811.0,96.2
+alto biobio,Biobío,6016.0,3005.0,3011.0,99.8
+temuco,La Araucanía,292518.0,138163.0,154355.0,89.5
+carahue,La Araucanía,24957.0,12208.0,12749.0,95.8
+cunco,La Araucanía,19177.0,9368.0,9809.0,95.5
+curarrehue,La Araucanía,7733.0,3901.0,3832.0,101.8
+freire,La Araucanía,26164.0,13029.0,13135.0,99.2
+galvarino,La Araucanía,12710.0,6360.0,6350.0,100.2
+gorbea,La Araucanía,14148.0,6778.0,7370.0,92.0
+lautaro,La Araucanía,41936.0,20197.0,21739.0,92.9
+loncoche,La Araucanía,25158.0,12201.0,12957.0,94.2
+melipeuco,La Araucanía,6796.0,3342.0,3454.0,96.8
+nueva imperial,La Araucanía,33988.0,16546.0,17442.0,94.9
+padre las casas,La Araucanía,80656.0,38960.0,41696.0,93.4
+perquenco,La Araucanía,7438.0,3631.0,3807.0,95.4
+pitrufquen,La Araucanía,27041.0,12988.0,14053.0,92.4
+pucon,La Araucanía,32321.0,15767.0,16554.0,95.2
+saavedra,La Araucanía,12877.0,6275.0,6602.0,95.0
+teodoro schmidt,La Araucanía,15639.0,7758.0,7881.0,98.4
+tolten,La Araucanía,10041.0,4941.0,5100.0,96.9
+vilcun,La Araucanía,31575.0,15386.0,16189.0,95.0
+villarrica,La Araucanía,67737.0,32807.0,34930.0,93.9
+cholchol,La Araucanía,13167.0,6578.0,6589.0,99.8
+angol,La Araucanía,53022.0,25143.0,27879.0,90.2
+collipulli,La Araucanía,24303.0,11731.0,12572.0,93.3
+curacautin,La Araucanía,18536.0,8944.0,9592.0,93.2
+ercilla,La Araucanía,7730.0,3750.0,3980.0,94.2
+lonquimay,La Araucanía,10247.0,5125.0,5122.0,100.1
+los sauces,La Araucanía,7348.0,3636.0,3712.0,98.0
+lumaco,La Araucanía,9253.0,4691.0,4562.0,102.8
+puren,La Araucanía,12184.0,5793.0,6391.0,90.6
+renaico,La Araucanía,10686.0,5150.0,5536.0,93.0
+traiguen,La Araucanía,18873.0,8971.0,9902.0,90.6
+victoria,La Araucanía,34464.0,16600.0,17864.0,92.9
+valdivia,Los Ríos,170043.0,81660.0,88383.0,92.4
+corral,Los Ríos,5501.0,2746.0,2755.0,99.7
+lanco,Los Ríos,16876.0,8133.0,8743.0,93.0
+los lagos,Los Ríos,21431.0,10596.0,10835.0,97.8
+mafil,Los Ríos,8074.0,3947.0,4127.0,95.6
+mariquina,Los Ríos,22973.0,11180.0,11793.0,94.8
+paillaco,Los Ríos,19802.0,9535.0,10267.0,92.9
+panguipulli,Los Ríos,35098.0,17044.0,18054.0,94.4
+la union,Los Ríos,38907.0,18865.0,20042.0,94.1
+futrono,Los Ríos,15635.0,7615.0,8020.0,95.0
+lago ranco,Los Ríos,10527.0,5181.0,5346.0,96.9
+rio bueno,Los Ríos,33363.0,16232.0,17131.0,94.8
+puerto montt,Los Lagos,277040.0,136544.0,140496.0,97.2
+calbuco,Los Lagos,36474.0,18374.0,18100.0,101.5
+cochamo,Los Lagos,4199.0,2213.0,1986.0,111.4
+fresia,Los Lagos,12320.0,6102.0,6218.0,98.1
+frutillar,Los Lagos,22554.0,11034.0,11520.0,95.8
+los muermos,Los Lagos,17162.0,8620.0,8542.0,100.9
+llanquihue,Los Lagos,18088.0,8826.0,9262.0,95.3
+maullin,Los Lagos,15063.0,7651.0,7412.0,103.2
+puerto varas,Los Lagos,52942.0,25814.0,27128.0,95.2
+castro,Los Lagos,46997.0,22832.0,24165.0,94.5
+ancud,Los Lagos,40949.0,19981.0,20968.0,95.3
+chonchi,Los Lagos,16078.0,7896.0,8182.0,96.5
+curaco de velez,Los Lagos,3662.0,1774.0,1888.0,94.0
+dalcahue,Los Lagos,14894.0,7403.0,7491.0,98.8
+puqueldon,Los Lagos,4048.0,2021.0,2027.0,99.7
+queilen,Los Lagos,5690.0,2859.0,2831.0,101.0
+quellon,Los Lagos,28460.0,14339.0,14121.0,101.5
+quemchi,Los Lagos,8409.0,4239.0,4170.0,101.7
+quinchao,Los Lagos,7678.0,3727.0,3951.0,94.3
+osorno,Los Lagos,166455.0,79484.0,86971.0,91.4
+puerto octay,Los Lagos,8865.0,4517.0,4348.0,103.9
+purranque,Los Lagos,19542.0,9515.0,10027.0,94.9
+puyehue,Los Lagos,11712.0,5782.0,5930.0,97.5
+rio negro,Los Lagos,13874.0,6840.0,7034.0,97.2
+san juan de la costa,Los Lagos,7776.0,4042.0,3734.0,108.2
+san pablo,Los Lagos,10883.0,5357.0,5526.0,96.9
+chaiten,Los Lagos,4025.0,2085.0,1940.0,107.5
+futaleufu,Los Lagos,3062.0,1542.0,1520.0,101.4
+hualaihue,Los Lagos,9480.0,4910.0,4570.0,107.4
+palena,Los Lagos,1903.0,946.0,957.0,98.9
+coyhaique,Aysén del General Carlos Ibáñez del Campo,57823.0,28170.0,29653.0,95.0
+lago verde,Aysén del General Carlos Ibáñez del Campo,779.0,427.0,352.0,121.3
+aysen,Aysén del General Carlos Ibáñez del Campo,23170.0,11522.0,11648.0,98.9
+cisnes,Aysén del General Carlos Ibáñez del Campo,5137.0,2598.0,2539.0,102.3
+guaitecas,Aysén del General Carlos Ibáñez del Campo,1598.0,857.0,741.0,115.7
+cochrane,Aysén del General Carlos Ibáñez del Campo,3458.0,1779.0,1679.0,106.0
+ohiggins,Aysén del General Carlos Ibáñez del Campo,647.0,331.0,316.0,104.7
+tortel,Aysén del General Carlos Ibáñez del Campo,505.0,269.0,236.0,114.0
+chile chico,Aysén del General Carlos Ibáñez del Campo,4905.0,2478.0,2427.0,102.1
+rio ibanez,Aysén del General Carlos Ibáñez del Campo,2723.0,1410.0,1313.0,107.4
+punta arenas,Magallanes y de la Antártica Chilena,132363.0,65028.0,67335.0,96.6
+laguna blanca,Magallanes y de la Antártica Chilena,269.0,187.0,82.0,228.0
+rio verde,Magallanes y de la Antártica Chilena,102.0,72.0,30.0,240.0
+san gregorio,Magallanes y de la Antártica Chilena,241.0,151.0,90.0,167.8
+cabo de hornos,Magallanes y de la Antártica Chilena,1750.0,881.0,869.0,101.4
+antartica,Magallanes y de la Antártica Chilena,60.0,56.0,4.0,1400.0
+porvenir,Magallanes y de la Antártica Chilena,6809.0,3592.0,3217.0,111.7
+primavera,Magallanes y de la Antártica Chilena,431.0,237.0,194.0,122.2
+timaukel,Magallanes y de la Antártica Chilena,157.0,95.0,62.0,153.2
+natales,Magallanes y de la Antártica Chilena,24152.0,12064.0,12088.0,99.8
+torres del paine,Magallanes y de la Antártica Chilena,203.0,118.0,85.0,138.8
+,,,,,
+,,,,,
