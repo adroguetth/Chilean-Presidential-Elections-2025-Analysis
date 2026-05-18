@@ -1,4 +1,4 @@
-﻿comuna,region,poblacion,pobl_hombres,pobl_mujeres,razon_hom_mujer
+﻿commune,region,population,male_population,female_population,sex_ratio
 camarones,Arica y Parinacota,861.0,430.0,431.0,99.8
 putre,Arica y Parinacota,1547.0,846.0,701.0,120.7
 general lagos,Arica y Parinacota,508.0,261.0,247.0,105.7
