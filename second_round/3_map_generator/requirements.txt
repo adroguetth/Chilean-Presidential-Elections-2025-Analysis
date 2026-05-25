@@ -1,0 +1,23 @@
+# requirements.txt
+# Dependencias para Generador de Mapas Electorales Chile 2025
+
+# Geoespaciales
+geopandas>=0.14.0
+shapely>=2.0.0
+pyproj>=3.6.0
+fiona>=1.9.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualización
+matplotlib>=3.7.0
+pillow>=10.0.0
+
+# Utilidades
+requests>=2.31.0
+python-dateutil>=2.8.0
+
+# Tests (opcional)
+pytest>=7.4.0
