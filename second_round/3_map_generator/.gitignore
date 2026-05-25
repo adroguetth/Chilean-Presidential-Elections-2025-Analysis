@@ -1,0 +1,46 @@
+# .gitignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Datos (no subir archivos grandes)
+*.geojson
+*.shp
+*.shx
+*.dbf
+*.prj
+*.csv
+*.xlsx
+
+# Outputs locales (se generan al ejecutar)
+outputs/
+*.png
+*.jpg
+*.jpeg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos temporales
+temp/
+*.tmp
