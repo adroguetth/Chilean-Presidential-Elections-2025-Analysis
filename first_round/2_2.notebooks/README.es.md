@@ -5,7 +5,6 @@
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white) ![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white) ![GeoPandas](https://img.shields.io/badge/GeoPandas-139C5A?style=flat-square&logo=geopandas&logoColor=white) ![Matplotlib](https://img.shields.io/badge/Matplotlib-4c72b0?style=flat-square&logo=python&logoColor=white)
 
 **Análisis de datos:** procesamiento cuantitativo, análisis espacial y visualización
-**Análisis político:** comentario experto independiente, contextualización e interpretación
 
 **Análisis político:** comentario experto independiente, contextualización e interpretación
 
