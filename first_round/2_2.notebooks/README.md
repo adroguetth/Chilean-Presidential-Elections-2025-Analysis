@@ -1,4 +1,5 @@
 # 🗳️ Electoral Analysis — Chile 2025 · Presidential First Round
+**¿Buscas la versión en español?** → [README.es.md](README.es.md)
 
 ![MIT License](https://img.shields.io/badge/license-MIT-9ecae1?style=flat-square&logo=open-source-initiative&logoColor=white) ![Jupyter](https://img.shields.io/badge/Jupyter-f37626?style=flat-square&logo=jupyter&logoColor=white) 
 
