@@ -110,7 +110,6 @@ Todos los archivos de datos se cargan directamente desde el directorio `raw/` de
 ### **Instalación Paso a Paso**
 
 1. **Clonar el Repositorio**
-
 ```bash
 git clone https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis.git
 cd Chilean-Presidential-Elections-2025-Analysis/first_round/2_notebooks
@@ -118,8 +117,7 @@ cd Chilean-Presidential-Elections-2025-Analysis/first_round/2_notebooks
 
 
 
-1. **Crear Entorno Virtual (recomendado)**
-
+2. **Crear Entorno Virtual (recomendado)**
 ```bash
 python -m venv venv
 
@@ -133,10 +131,7 @@ venv\Scripts\activate
 
 
 
-1. **Instalar Dependencias**
-
-bash
-
+3. **Instalar Dependencias**
 ```bash
 pip install -r requirements.txt
 ```
@@ -151,7 +146,8 @@ conda install -c conda-forge geopandas pandas numpy matplotlib jupyterlab
 
 
 
-1. **Ejecutar el Notebook**
+
+4. **Ejecutar el Notebook**
 
 ```bash
 # Versión en inglés
