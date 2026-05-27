@@ -4,7 +4,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white) ![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white) ![GeoPandas](https://img.shields.io/badge/GeoPandas-139C5A?style=flat-square&logo=geopandas&logoColor=white) ![Matplotlib](https://img.shields.io/badge/Matplotlib-4c72b0?style=flat-square&logo=python&logoColor=white)
 
-**Data analytics:** quantitative processing, spatial analysis and visualisation
+**Data analytics:** quantitative processing, spatial analysis and visualisation <br/>
 **Political analysis:** independent expert commentary, contextualisation and interpretation
 
 ------
@@ -41,7 +41,7 @@ The analysis was produced under **compulsory voting** — reinstated in Chile in
 | **9. Urban Centre Behaviour**   | Five-tier urban–rural gradient (>200k → <10k inhabitants)    | Table, bar chart |
 | **10. Winners by Commune**      | National choropleth + metropolitan area facets               | Maps             |
 | **11. Recoverable Communes**    | Margins < 1,000 votes; mobilisation cost by macrozone        | Table, bar chart |
-| **12. Runoff Projections **     | Four vote-transfer scenarios (Jara vs. Kast)                 | Table            |
+| **12. Runoff Projections**     | Four vote-transfer scenarios (Jara vs. Kast)                 | Table            |
 | **13. Anti-Establishment Vote** | Parisi vs. the duopoly; commune-level dominance analysis     | Table            |
 | **14.  Comparative 2021–2025**  | Realignment matrix; Parisi growth; territorial transitions <br/>**Transition Maps** Canonical commune key for cross-dataset joins | Table, Maps      |
 | **Executive Summary**           | Summary of findings and conclusion                           | None             |
