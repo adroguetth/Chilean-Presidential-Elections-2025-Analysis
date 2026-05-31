@@ -7,7 +7,7 @@
 --                   campaign-level shifts could flip the outcome in a runoff
 -- Critical threshold: 1,000 votes (adjustable based on electoral context)
 -- Database: SQL Server 2012+
--- Source table: resultados_elecciones (columns: commune, region, jara_pct, kast_pct,
+-- Source table: first_round_2025 (columns: commune, region, jara_pct, kast_pct,
 --              blank_votes, null_votes, casted_votes)
 
 WITH votos_comuna AS (
@@ -17,7 +17,7 @@ WITH votos_comuna AS (
         (casted_votes - null_votes - blank_votes) AS votos_validos,
         jara_pct,
         kast_pct
-    FROM resultados_elecciones
+    FROM first_round_2025
 ),
 votos_absolutos AS (
     SELECT
