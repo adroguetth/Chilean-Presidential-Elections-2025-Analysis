@@ -39,6 +39,7 @@ License: MIT
 
 import os
 import sys
+import shutil
 import subprocess
 from pathlib import Path
 from google.oauth2.credentials import Credentials
@@ -90,21 +91,38 @@ def get_authenticated_service():
     return build('drive', 'v3', credentials=creds)
 
 
-def convert_to_pdf(notebook_path: Path) -> Path:
-    """Convert a Jupyter notebook to PDF using nbconvert + playwright."""
+def convert_to_pdf(notebook_path: Path, hide_code: bool = True) -> Path:
+    """
+    Convert a Jupyter notebook to PDF using nbconvert + playwright.
+    
+    Args:
+        notebook_path: Path to the .ipynb file
+        hide_code: If True, removes code cells from output (--no-input)
+    
+    Returns:
+        Path: Path to the generated PDF file
+    """
     pdf_filename = f"{notebook_path.stem}.pdf"
     pdf_path = TEMP_DIR / pdf_filename
 
     # Ensure playwright browsers are installed
     subprocess.run(["playwright", "install", "chromium"], check=False)
 
+    # Build command
     cmd = [
         "jupyter", "nbconvert", "--to", "webpdf",
         "--output-dir", str(TEMP_DIR),
         "--output", pdf_filename,
         str(notebook_path)
     ]
-    print(f"Converting: {notebook_path.name} to PDF...")
+    
+    # Add --no-input to hide code cells (for executive reports)
+    if hide_code:
+        cmd.insert(3, "--no-input")
+        print(f"Converting (hide_code=True): {notebook_path.name} to PDF...")
+    else:
+        print(f"Converting (hide_code=False): {notebook_path.name} to PDF...")
+    
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         print("nbconvert error:")
@@ -165,25 +183,57 @@ def main():
         print(f"Expected: {NOTEBOOK_ES}")
         sys.exit(1)
 
-    # Convert notebooks to PDF
-    pdfs = {}
+    # =========================================
+    # 1. Convert to PDF for TECHNICAL BACKUP (with code)
+    # =========================================
+    print("\n" + "-" * 40)
+    print("STEP 1: Converting for TECHNICAL BACKUP (with code)")
+    print("-" * 40)
+    
+    pdfs_tech = {}
     if NOTEBOOK_EN.exists():
         print(f"\nEN notebook found: {NOTEBOOK_EN.name}")
-        pdfs['en'] = convert_to_pdf(NOTEBOOK_EN)
+        pdfs_tech['en'] = convert_to_pdf(NOTEBOOK_EN, hide_code=False)
     else:
         print(f"\nWARNING: EN notebook not found at {NOTEBOOK_EN}")
 
     if NOTEBOOK_ES.exists():
         print(f"\nES notebook found: {NOTEBOOK_ES.name}")
-        pdfs['es'] = convert_to_pdf(NOTEBOOK_ES)
+        pdfs_tech['es'] = convert_to_pdf(NOTEBOOK_ES, hide_code=False)
     else:
         print(f"\nWARNING: ES notebook not found at {NOTEBOOK_ES}")
 
-    if not pdfs:
+    # =========================================
+    # 2. Convert to PDF for EXECUTIVE REPORTS (without code)
+    # =========================================
+    print("\n" + "-" * 40)
+    print("STEP 2: Converting for EXECUTIVE REPORTS (without code)")
+    print("-" * 40)
+    
+    pdfs_exec = {}
+    if NOTEBOOK_EN.exists():
+        print(f"\nEN notebook found: {NOTEBOOK_EN.name}")
+        pdfs_exec['en'] = convert_to_pdf(NOTEBOOK_EN, hide_code=True)
+    else:
+        print(f"\nWARNING: EN notebook not found at {NOTEBOOK_EN}")
+
+    if NOTEBOOK_ES.exists():
+        print(f"\nES notebook found: {NOTEBOOK_ES.name}")
+        pdfs_exec['es'] = convert_to_pdf(NOTEBOOK_ES, hide_code=True)
+    else:
+        print(f"\nWARNING: ES notebook not found at {NOTEBOOK_ES}")
+
+    if not pdfs_tech and not pdfs_exec:
         print("ERROR: No notebooks found to process.")
         sys.exit(1)
 
-    # Upload to Google Drive
+    # =========================================
+    # 3. Upload to Google Drive
+    # =========================================
+    print("\n" + "-" * 40)
+    print("STEP 3: Uploading to Google Drive")
+    print("-" * 40)
+    
     service = get_authenticated_service()
 
     # Create folder structure: first_round/
@@ -194,44 +244,59 @@ def main():
     tech_backup_id = create_or_get_folder(service, "technical_backup", first_round_id)
     exec_reports_id = create_or_get_folder(service, "executive_reports", first_round_id)
 
-    # Process each language
+    # =========================================
+    # 4. Upload TECHNICAL BACKUP (notebook + PDF with code)
+    # =========================================
+    print("\n" + "=" * 40)
+    print("UPLOADING TECHNICAL BACKUP (with code)")
+    print("=" * 40)
+    
     for lang, notebook_path in [('en', NOTEBOOK_EN), ('es', NOTEBOOK_ES)]:
         if not notebook_path.exists():
             continue
 
-        print(f"\n{'=' * 40}")
-        print(f"Processing language: {lang.upper()}")
-        print(f"{'=' * 40}")
-
-        # 1. TECHNICAL BACKUP (notebook + PDF)
-        print("\n📁 Uploading to technical_backup/...")
+        print(f"\nProcessing language: {lang.upper()}")
+        print("-" * 30)
+        
         lang_folder_id = create_or_get_folder(service, lang.upper(), tech_backup_id)
 
         print("   Uploading notebook...")
         upload_file(service, notebook_path, lang_folder_id, 'application/x-ipynb+json')
 
-        print("   Uploading PDF...")
-        pdf_path = pdfs[lang]
+        print("   Uploading PDF (with code)...")
+        pdf_path = pdfs_tech[lang]
         upload_file(service, pdf_path, lang_folder_id, 'application/pdf')
 
-        # 2. EXECUTIVE REPORTS (only PDF, cleaner format)
-        # Note: For executive reports, you would use a cleaned version of the PDF
-        # For now, it uploads the same PDF (you can replace with cleaned version later)
-        print("\n📁 Uploading to executive_reports/...")
-        exec_lang_folder_id = create_or_get_folder(service, lang.upper(), exec_reports_id)
+    # =========================================
+    # 5. Upload EXECUTIVE REPORTS (only PDF without code)
+    # =========================================
+    print("\n" + "=" * 40)
+    print("UPLOADING EXECUTIVE REPORTS (without code)")
+    print("=" * 40)
+    
+    for lang, notebook_path in [('en', NOTEBOOK_EN), ('es', NOTEBOOK_ES)]:
+        if not notebook_path.exists():
+            continue
+
+        print(f"\nProcessing language: {lang.upper()}")
+        print("-" * 30)
+        
+        lang_folder_id = create_or_get_folder(service, lang.upper(), exec_reports_id)
 
         # Rename for executive report
         exec_pdf_name = f"electoral_report_2025_{lang.upper()}.pdf"
         exec_pdf_path = TEMP_DIR / exec_pdf_name
 
-        # Copy/symlink the same PDF with new name
+        # Copy the PDF (without code) with new name
+        pdf_path = pdfs_exec[lang]
         if pdf_path.exists():
-            import shutil
             shutil.copy(pdf_path, exec_pdf_path)
-            upload_file(service, exec_pdf_path, exec_lang_folder_id, 'application/pdf')
+            upload_file(service, exec_pdf_path, lang_folder_id, 'application/pdf')
             exec_pdf_path.unlink()  # clean up
 
-    # Clean up temporary files
+    # =========================================
+    # 6. Clean up temporary files
+    # =========================================
     for f in TEMP_DIR.glob("*.pdf"):
         f.unlink()
     print("\n✅ Temporary files removed.")
@@ -243,11 +308,11 @@ def main():
     print(f"   {ROOT_FOLDER_ID}/")
     print(f"   └── first_round/")
     print(f"       ├── technical_backup/")
-    print(f"       │   ├── EN/ (notebook.ipynb + .pdf)")
-    print(f"       │   └── ES/ (notebook.ipynb + .pdf)")
+    print(f"       │   ├── EN/ (notebook.ipynb + PDF with code)")
+    print(f"       │   └── ES/ (notebook.ipynb + PDF with code)")
     print(f"       └── executive_reports/")
-    print(f"           ├── EN/ (electoral_report_2025_EN.pdf)")
-    print(f"           └── ES/ (electoral_report_2025_ES.pdf)")
+    print(f"           ├── EN/ (electoral_report_2025_EN.pdf - NO code)")
+    print(f"           └── ES/ (electoral_report_2025_ES.pdf - NO code)")
     print("=" * 60)
 
 
