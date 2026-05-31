@@ -4,7 +4,7 @@
 -- Objective: Calculate average vote shares and identify winners at regional level
 -- Context: Reveal geographic voting patterns and regional strongholds
 -- Database: SQL Server 2012+
--- Source table: resultados_elecciones (columns: region, jara_pct, kast_pct, parisi_pct, kaiser_pct)
+-- Source table: first_round_2025 (columns: region, jara_pct, kast_pct, parisi_pct, kaiser_pct)
 
 WITH resultados_region AS (
     SELECT
@@ -13,7 +13,7 @@ WITH resultados_region AS (
         ROUND(AVG(kast_pct), 2) AS kast_promedio,
         ROUND(AVG(parisi_pct), 2) AS parisi_promedio,
         ROUND(AVG(kaiser_pct), 2) AS kaiser_promedio
-    FROM resultados_elecciones
+    FROM first_round_2025
     GROUP BY region
 ),
 ganadores_region AS (
