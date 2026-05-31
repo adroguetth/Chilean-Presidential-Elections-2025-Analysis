@@ -4,7 +4,7 @@
 -- Objective: Determine the two candidates who advanced to the second round
 -- Context: Identify winner and runner-up based on valid vote share
 -- Database: SQL Server 2012+
--- Source table: resultados_elecciones (columns: artes_votes, enriquez_ominami_votes, jara_votes, 
+-- Source table: first_round_2025 (columns: artes_votes, enriquez_ominami_votes, jara_votes, 
 --              kaiser_votes, kast_votes, matthei_votes, mayne_nicholls_votes, parisi_votes,
 --              blank_votes, null_votes, casted_votes)
 
@@ -19,7 +19,7 @@ WITH suma_votos AS (
         SUM(matthei_votes) AS matthei_total,
         SUM(mayne_nicholls_votes) AS mayne_nicholls_total,
         SUM(parisi_votes) AS parisi_total
-    FROM resultados_elecciones
+    FROM first_round_2025
 ),
 candidatos_votos AS (
     SELECT 'Eduardo Artes' AS candidato,
