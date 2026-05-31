@@ -4,7 +4,7 @@
 -- Objective: Compute core voter participation metrics
 -- Context: Foundational dataset for all subsequent analyses
 -- Database: SQL Server 2012+
--- Source table: resultados_elecciones (columns: blank_votes, null_votes, casted_votes)
+-- Source table: first_round_2025 (columns: blank_votes, null_votes, casted_votes)
 
 WITH participacion_nacional AS (
 SELECT
