@@ -13,7 +13,7 @@ SELECT
     SUM(blank_votes) AS total_votos_blancos,
     SUM(null_votes) AS total_votos_nulos,
     SUM(casted_votes) - (SUM(blank_votes) + SUM(null_votes)) AS total_votos_validos
-FROM resultados_elecciones
+FROM first_round_2025
 )
 SELECT 'Total comunas' AS indicador, total_comunas AS valor FROM participacion_nacional
 UNION ALL
