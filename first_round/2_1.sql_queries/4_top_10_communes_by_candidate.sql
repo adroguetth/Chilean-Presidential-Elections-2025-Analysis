@@ -4,7 +4,7 @@
 -- Objective: Identify communes where each candidate achieved their highest vote shares
 -- Context: Reveal geographic strongholds and territorial concentration patterns
 -- Database: SQL Server 2012+
--- Source table: resultados_elecciones (columns: commune, region, jara_pct, kast_pct, parisi_pct, 
+-- Source table: first_round_2025 (columns: commune, region, jara_pct, kast_pct, parisi_pct, 
 --              kaiser_pct, matthei_pct, artes_pct, enriquez_ominami_pct, mayne_nicholls_pct)
 
 -- 4.1 JEANNETTE JARA
@@ -19,7 +19,7 @@ SELECT TOP 10
         THEN 'Wins in this commune'
         ELSE 'Loses in this commune'
     END AS resultado_comuna
-FROM resultados_elecciones
+FROM first_round_2025
 ORDER BY jara_pct DESC;
 
 -- 4.2 JOSÉ ANTONIO KAST
@@ -34,7 +34,7 @@ SELECT TOP 10
         THEN 'Wins in this commune'
         ELSE 'Loses in this commune'
     END AS resultado_comuna
-FROM resultados_elecciones
+FROM first_round_2025
 ORDER BY kast_pct DESC;
 
 -- 4.3 FRANCO PARISI
@@ -49,7 +49,7 @@ SELECT TOP 10
         THEN 'Wins in this commune'
         ELSE 'Loses in this commune'
     END AS resultado_comuna
-FROM resultados_elecciones
+FROM first_round_2025
 ORDER BY parisi_pct DESC;
 
 -- 4.4 JOHANNES KAISER
@@ -64,7 +64,7 @@ SELECT TOP 10
         THEN 'Wins in this commune'
         ELSE 'Loses in this commune'
     END AS resultado_comuna
-FROM resultados_elecciones
+FROM first_round_2025
 ORDER BY kaiser_pct DESC;
 
 -- 4.5 EVELYN MATTHEI
@@ -79,5 +79,5 @@ SELECT TOP 10
         THEN 'Wins in this commune'
         ELSE 'Loses in this commune'
     END AS resultado_comuna
-FROM resultados_elecciones
+FROM first_round_2025
 ORDER BY matthei_pct DESC;
