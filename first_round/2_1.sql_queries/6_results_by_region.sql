@@ -1,5 +1,5 @@
 -- =====================================================
--- 6. RESULTS BY REGION
+-- 6. RESULTS BY REGION (NORTH-SOUTH ORDER)
 -- =====================================================
 -- Objective: Calculate average vote shares and identify winners at regional level
 -- Context: Reveal geographic voting patterns and regional strongholds
@@ -9,10 +9,10 @@
 WITH resultados_region AS (
     SELECT
         region,
-        ROUND(AVG(jara_pct), 2) AS jara_promedio,
-        ROUND(AVG(kast_pct), 2) AS kast_promedio,
-        ROUND(AVG(parisi_pct), 2) AS parisi_promedio,
-        ROUND(AVG(kaiser_pct), 2) AS kaiser_promedio
+        CAST(ROUND(AVG(jara_pct), 2) AS DECIMAL(5,2)) AS jara_promedio,
+        CAST(ROUND(AVG(kast_pct), 2) AS DECIMAL(5,2)) AS kast_promedio,
+        CAST(ROUND(AVG(parisi_pct), 2) AS DECIMAL(5,2)) AS parisi_promedio,
+        CAST(ROUND(AVG(kaiser_pct), 2) AS DECIMAL(5,2)) AS kaiser_promedio
     FROM first_round_2025
     GROUP BY region
 ),
@@ -32,15 +32,17 @@ ganadores_region AS (
             THEN 'Franco Parisi'
             ELSE 'Johannes Kaiser'
         END AS ganador,
-        CASE
-            WHEN jara_promedio >= kast_promedio AND jara_promedio >= parisi_promedio AND jara_promedio >= kaiser_promedio 
-            THEN jara_promedio
-            WHEN kast_promedio >= jara_promedio AND kast_promedio >= parisi_promedio AND kast_promedio >= kaiser_promedio 
-            THEN kast_promedio
-            WHEN parisi_promedio >= jara_promedio AND parisi_promedio >= kast_promedio AND parisi_promedio >= kaiser_promedio 
-            THEN parisi_promedio
-            ELSE kaiser_promedio
-        END AS porcentaje_ganador
+        CAST(ROUND(
+            CASE
+                WHEN jara_promedio >= kast_promedio AND jara_promedio >= parisi_promedio AND jara_promedio >= kaiser_promedio 
+                THEN jara_promedio
+                WHEN kast_promedio >= jara_promedio AND kast_promedio >= parisi_promedio AND kast_promedio >= kaiser_promedio 
+                THEN kast_promedio
+                WHEN parisi_promedio >= jara_promedio AND parisi_promedio >= kast_promedio AND parisi_promedio >= kaiser_promedio 
+                THEN parisi_promedio
+                ELSE kaiser_promedio
+            END, 2) AS DECIMAL(5,2)
+        ) AS porcentaje_ganador
     FROM resultados_region
 )
 SELECT
@@ -52,4 +54,23 @@ SELECT
     parisi_promedio,
     kaiser_promedio
 FROM ganadores_region
-ORDER BY porcentaje_ganador DESC;
+ORDER BY
+    CASE region
+        WHEN 'Arica y Parinacota' THEN 1
+        WHEN 'Tarapacá' THEN 2
+        WHEN 'Antofagasta' THEN 3
+        WHEN 'Atacama' THEN 4
+        WHEN 'Coquimbo' THEN 5
+        WHEN 'Valparaíso' THEN 6
+        WHEN 'Metropolitana' THEN 7
+        WHEN 'Libertador' THEN 8
+        WHEN 'Maule' THEN 9
+        WHEN 'Ñuble' THEN 10
+        WHEN 'Biobío' THEN 11
+        WHEN 'La Araucanía' THEN 12
+        WHEN 'Los Ríos' THEN 13
+        WHEN 'Los Lagos' THEN 14
+        WHEN 'Aysén' THEN 15
+        WHEN 'Magallanes' THEN 16
+        ELSE 99
+    END;
