@@ -4,7 +4,7 @@
 -- Objective: Analyze voting patterns in Chile's 16 regional capitals
 -- Context: Compare capital city behavior against regional hinterlands
 -- Database: SQL Server 2012+
--- Source table: resultados_elecciones (columns: commune, region, jara_pct, kast_pct, parisi_pct, kaiser_pct)
+-- Source table: first_round_2025 (columns: commune, region, jara_pct, kast_pct, parisi_pct, kaiser_pct)
 
 WITH capitales_regionales AS (
     SELECT
@@ -29,7 +29,7 @@ WITH capitales_regionales AS (
             WHEN parisi_pct >= jara_pct AND parisi_pct >= kast_pct AND parisi_pct >= kaiser_pct THEN parisi_pct
             ELSE kaiser_pct
         END AS porcentaje_ganador
-    FROM resultados_elecciones
+    FROM first_round_2025
     WHERE commune IN (
         'Arica', 'Iquique', 'Antofagasta', 'Copiapó', 'La Serena', 'Valparaíso',
         'Santiago', 'Rancagua', 'Talca', 'Chillán', 'Concepción', 'Temuco',
