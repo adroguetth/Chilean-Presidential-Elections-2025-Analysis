@@ -97,7 +97,7 @@ def convert_to_pdf(notebook_path: Path, hide_code: bool = True) -> Path:
     
     Args:
         notebook_path: Path to the .ipynb file
-        hide_code: If True, removes code cells from output (--no-input)
+        hide_code: If True, removes code cells from output
     
     Returns:
         Path: Path to the generated PDF file
@@ -116,9 +116,11 @@ def convert_to_pdf(notebook_path: Path, hide_code: bool = True) -> Path:
         str(notebook_path)
     ]
     
-    # Add --no-input to hide code cells (for executive reports)
+    # Add options to hide code (for executive reports)
     if hide_code:
-        cmd.insert(3, "--no-input")
+        cmd.insert(3, "--TemplateExporter.exclude_input=True")
+        cmd.insert(4, "--TemplateExporter.exclude_output_prompt=True")
+        cmd.insert(5, "--TemplateExporter.exclude_input_prompt=True")
         print(f"Converting (hide_code=True): {notebook_path.name} to PDF...")
     else:
         print(f"Converting (hide_code=False): {notebook_path.name} to PDF...")
