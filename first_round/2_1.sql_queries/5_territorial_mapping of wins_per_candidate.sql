@@ -4,7 +4,7 @@
 -- Objective: Count how many communes each candidate won across the country
 -- Context: Reveal territorial dominance and geographic fragmentation of vote
 -- Database: SQL Server 2012+
--- Source table: resultados_elecciones (columns: commune, region, artes_pct, enriquez_ominami_pct, 
+-- Source table: first_round_2025 (columns: commune, region, artes_pct, enriquez_ominami_pct, 
 --              jara_pct, kaiser_pct, kast_pct, matthei_pct, mayne_nicholls_pct, parisi_pct)
 
 WITH ranked_communes AS (
@@ -57,7 +57,7 @@ WITH ranked_communes AS (
             THEN 'Franco Parisi'
             ELSE 'Tie / No data'
         END AS ganador_comuna
-    FROM resultados_elecciones
+    FROM first_round_2025
 )
 SELECT
     ganador_comuna AS candidato,
