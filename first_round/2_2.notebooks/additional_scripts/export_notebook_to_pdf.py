@@ -108,24 +108,22 @@ def convert_to_pdf(notebook_path: Path, hide_code: bool = True) -> Path:
     # Ensure playwright browsers are installed
     subprocess.run(["playwright", "install", "chromium"], check=False)
 
-    # Build command
+    # Base command
     cmd = [
         "jupyter", "nbconvert", "--to", "webpdf",
         "--output-dir", str(TEMP_DIR),
         "--output", pdf_filename,
         str(notebook_path)
     ]
-    
-    # Add options to hide code (for executive reports)
+
+    # Add flags to hide code if requested
     if hide_code:
-        cmd.insert(3, "--TemplateExporter.exclude_input=True")
-        cmd.insert(4, "--TemplateExporter.exclude_output_prompt=True")
-        cmd.insert(5, "--TemplateExporter.exclude_input_prompt=True")
-        print(f"Converting (hide_code=True): {notebook_path.name} to PDF...")
-    else:
-        print(f"Converting (hide_code=False): {notebook_path.name} to PDF...")
-    
+        cmd.append("--no-input")      # Hide code cells
+        cmd.append("--no-prompt")     # Hide input/output prompts
+
+    print(f"Converting (hide_code={hide_code}): {notebook_path.name} to PDF...")
     result = subprocess.run(cmd, capture_output=True, text=True)
+
     if result.returncode != 0:
         print("nbconvert error:")
         print(result.stderr)
