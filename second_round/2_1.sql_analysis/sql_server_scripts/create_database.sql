@@ -1,7 +1,7 @@
 -- =====================================================
--- INSERTS PARA TABLA: second_round_2025
--- Total de registros: 346
--- Generado: 2026-06-01 02:13:21.945401
+-- INSERTS FOR TABLE: second_round_2025
+-- Total records: 346
+-- Generated: 2026-06-01 02:13:21.945401
 -- =====================================================
 
 USE EleccionesChile2025;
