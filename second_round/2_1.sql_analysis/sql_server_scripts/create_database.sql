@@ -1,14 +1,39 @@
 -- =====================================================
--- INSERTS FOR TABLE: second_round_2025
--- Total records: 346
--- Generated: 2026-06-01 02:13:21.945401
+-- CREATE TABLE second_round_2025
+-- =====================================================
+-- Generated: 2026-06-01
+-- Source: chile_2025_second_round.csv
+-- Rows: 346
+-- Columns: 12
 -- =====================================================
 
 USE EleccionesChile2025;
 GO
 
-TRUNCATE TABLE second_round_2025;
+IF OBJECT_ID('second_round_2025', 'U') IS NOT NULL
+    DROP TABLE second_round_2025;
 GO
+
+CREATE TABLE second_round_2025 (
+    [commune] NVARCHAR(100),
+    [region] NVARCHAR(100),
+    [jara_votes] INT,
+    [jara_pct] DECIMAL(10,2),
+    [kast_votes] INT,
+    [kast_pct] DECIMAL(10,2),
+    [blank_votes] INT,
+    [blank_pct] DECIMAL(10,2),
+    [casted_votes] INT,
+    [casted_pct] DECIMAL(10,2),
+    [null_votes] INT,
+    [null_pct] DECIMAL(10,2)
+);
+GO
+
+-- =====================================================
+-- INSERTS FOR TABLE: second_round_2025
+-- Total records: 346
+-- =====================================================
 
 INSERT INTO second_round_2025 ([commune], [region], [jara_votes], [jara_pct], [kast_votes], [kast_pct], [blank_votes], [blank_pct], [casted_votes], [casted_pct], [null_votes], [null_pct]) VALUES ('Antofagasta', 'Antofagasta', 102890, 45.15, 124984, 54.85, 3884, 1.53, 253849, 100.0, 22091, 8.7);
 INSERT INTO second_round_2025 ([commune], [region], [jara_votes], [jara_pct], [kast_votes], [kast_pct], [blank_votes], [blank_pct], [casted_votes], [casted_pct], [null_votes], [null_pct]) VALUES ('Calama', 'Antofagasta', 34473, 36.0, 61295, 64.0, 1222, 1.14, 107390, 100.0, 10400, 9.68);
