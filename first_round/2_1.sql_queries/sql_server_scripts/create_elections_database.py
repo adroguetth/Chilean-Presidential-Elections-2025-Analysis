@@ -32,7 +32,6 @@ Requirements:
 
 Author: Alfonso Droguett
 License: MIT
-Date: May 2025
 """
 
 import pandas as pd
