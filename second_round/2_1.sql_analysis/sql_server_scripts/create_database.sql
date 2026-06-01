@@ -358,4 +358,4 @@ INSERT INTO second_round_2025 ([commune], [region], [jara_votes], [jara_pct], [k
 INSERT INTO second_round_2025 ([commune], [region], [jara_votes], [jara_pct], [kast_votes], [kast_pct], [blank_votes], [blank_pct], [casted_votes], [casted_pct], [null_votes], [null_pct]) VALUES ('ÑIquen', 'Ñuble', 2119, 22.27, 7394, 77.73, 78, 0.77, 10103, 100.0, 512, 5.07);
 
 GO
--- ✅ Total: 346 registros insertados
+-- ✅ Total: 346 records inserted
