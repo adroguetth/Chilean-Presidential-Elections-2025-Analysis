@@ -30,11 +30,19 @@ WHERE winner_commune != 'Tie' AND winner_commune != 'No data'
 GROUP BY winner_commune
 ORDER BY communes_won DESC;
 
+-- =====================================================
 -- KEY FINDINGS:
 -- =====================================================
--- Territorial dominance: Kast won 89.6% of communes (310 of 346)
--- Jara's strongholds: Only 36 communes (10.4%) voted for Jara
--- Disconnect between vote share and territory: 
---   - Kast: 58.24% of votes, 89.6% of communes
---   - Jara: 41.76% of votes, 10.4% of communes
+-- Territorial dominance: José Antonio Kast achieved a crushing victory at the 
+-- communal level, winning 310 out of 346 communes (89.6% of the country).
+-- Jeannette Jara won only 36 communes (10.4%).
+
+-- Major disconnect between vote share and territorial control:
+-- - Kast: 58.24% of valid votes → 89.6% of communes won
+-- - Jara: 41.76% of valid votes → only 10.4% of communes won
+
+-- This result reveals Kast's broad national appeal, especially in rural, 
+-- semi-rural, and provincial areas, while Jara's support remained heavily 
+-- concentrated in a small number of urban strongholds (mainly in the 
+-- Metropolitan Region).
 -- =====================================================
