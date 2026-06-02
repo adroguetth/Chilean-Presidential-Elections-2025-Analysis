@@ -31,17 +31,21 @@ FROM regional_winners
 GROUP BY region
 ORDER BY region;
 
+-- =====================================================
 -- KEY FINDINGS:
 -- =====================================================
--- Kast won ALL 16 regions (100% regional victory)
--- Only 4 regions had any Jara commune wins: Metropolitana (21), Atacama (4), 
---   Antofagasta (3), Coquimbo (3), Valparaíso (5)
--- Jara's strongest region: Metropolitana (21 communes, but still lost region 31-21)
+-- José Antonio Kast achieved a complete regional sweep, winning ALL 16 regions (100%).
+-- Jeannette Jara only won communes in 5 regions, with her strongest performance in 
+-- the Metropolitan Region (21 communes), followed by Valparaíso (5), Atacama (4), 
+-- Coquimbo (3), and Antofagasta (3).
 
 -- POLITICAL SIGNIFICANCE:
 -- =====================================================
--- This is an unprecedented territorial victory. Kast's support is not regional
--- but national. Jara's coalition was reduced to isolated urban pockets, 
--- unable to flip a single region despite winning 41.76% of the national vote.
--- The geographic fragmentation of the left vote is extreme.
+-- This represents an unprecedented territorial victory for Kast. Despite Jara 
+-- obtaining a respectable 41.76% of the national vote, her support was extremely 
+-- concentrated in a few urban pockets, mainly in the Metropolitan Region.
+-- Kast demonstrated truly national appeal, dominating both rural and most urban 
+-- areas outside the core of Santiago.
+-- The left's geographic fragmentation is severe: Jara was unable to win a single 
+-- region, highlighting the collapse of progressive support beyond dense urban centers.
 -- =====================================================
