@@ -38,13 +38,18 @@ ORDER BY percentage DESC;
 -- =====================================================
 -- EXPECTED OUTPUT INTERPRETATION:
 -- =====================================================
--- WINNER: José Antonio Kast (58.24% vs 41.76%)
--- Margin: 16.49 percentage points (2,046,992 votes)
--- Total valid votes: 12,415,044 (Kast 7,231,018 + Jara 5,184,026)
--- 
--- Key findings:
--- - Kast wins by a decisive double-digit margin (+16.49pp)
--- - Winning margin exceeds 2 million votes, larger than many pre-election polls
--- - Jara's performance (41.76%) reflects base left vote without Parisi voter transfer
--- - Historical context: This margin is among the largest in Chilean runoff history
+-- WINNER: José Antonio Kast elected President with 58.24% of valid votes
+-- Final Result: Kast 7,231,018 votes (58.24%) vs Jara 5,184,026 votes (41.76%)
+-- Winning Margin: 16.49 percentage points (2,046,992 votes)
+-- Total valid votes: 12,415,044
+
+-- Key Insights:
+-- - Kast achieved a decisive victory with a double-digit margin (+16.49 pp), 
+--   significantly larger than most pre-election projections.
+-- - Jara retained a solid base (41.76%), but failed to attract sufficient 
+--   transfer from Parisi voters or centrists.
+-- - This margin ranks among the largest in Chilean presidential runoff history 
+--   since the return to democracy.
+-- - The result confirms a clear shift toward the right and a rejection of the 
+--   outgoing government's continuity.
 -- =====================================================
