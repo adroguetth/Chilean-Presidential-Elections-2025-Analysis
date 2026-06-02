@@ -40,16 +40,17 @@ ORDER BY blank_votes_change DESC
 -- =====================================================
 -- EXPECTED OUTPUT INTERPRETATION:
 -- =====================================================
--- Blank votes increased in 11 regions, decreased in 5 regions (Maule, La Araucanía, 
--- Ñuble, Los Lagos, Aysén). Largest increase: Metropolitana (+15,674 votes, +0.31pp).
--- Largest decrease: Maule (-1,308 votes, -0.15pp). Unlike null votes which increased 
--- universally (16/16 regions), blank votes showed regional variation.
--- 
+-- Blank votes increased in 11 out of 16 regions (69%), but showed more regional variation 
+-- than null votes, which rose universally.
+-- The Metropolitan Region led the increase both in absolute (+15,674 votes) and percentage 
+-- point terms (+0.31 pp).
+-- In contrast, five regions in the Center-South and South (Maule, La Araucanía, Ñuble, 
+-- Los Lagos, and Aysén) actually reduced blank votes.
+--
 -- CONCLUSION:
--- Blank votes increased in 11 of 16 regions (69%), contrasting with null votes which
--- increased in all 16 regions (100%). The Metropolitana region contributed nearly half
--- (47%) of the national blank vote increase. Five southern/central-south regions 
--- (Maule, La Araucanía, Ñuble, Los Lagos, Aysén) actually reduced blank votes, 
--- suggesting voters there shifted from blank to null as their preferred protest 
--- mechanism against the Jara-Kast duopoly.
+-- While null votes surged across the entire country as a form of active protest, blank 
+-- votes presented a more mixed pattern. The significant rise in the Metropolitan Region 
+-- suggests higher passive discontent in urban centers, whereas some southern regions 
+-- appear to have shifted from blank to null votes, indicating a more radicalized protest 
+-- against the Jara-Kast duopoly.
 -- =====================================================
