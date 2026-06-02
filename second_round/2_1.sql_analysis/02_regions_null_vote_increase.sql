@@ -39,12 +39,12 @@ FROM regional_null_votes
 WHERE null_votes_second_round > null_votes_first_round
 ORDER BY null_votes_change DESC;
 
+
 -- =====================================================
 -- EXPECTED OUTPUT INTERPRETATION:
 -- =====================================================
--- Normal pattern: Null votes remain stable or decrease in second round
--- Anomaly detected: 100% of regions (16/16) increased null votes
--- Most affected: Antofagasta (+5.96pp to 9.04%), Atacama (+5.25pp to 8.05%)
--- Geographic pattern: Northern mining regions led the increase (3 of top 4)
--- Political insight: Coordinated protest vote against Jara-Kast duopoly
+-- Anomaly detected: Null votes increased in ALL 16 regions (100%).
+-- The Metropolitan Region led in absolute numbers (+134,520 null votes), while northern mining regions showed the sharpest percentage point increases (Antofagasta +5.96 pp, Atacama +5.25 pp).
+-- This widespread rise suggests a combination of political disaffection with the Jara-Kast duopoly and a strengthened anti-establishment sentiment.
+-- The pattern points more toward active protest voting (antisystem effect) than simple fatigue, particularly in regions with high prior support for Parisi.
 -- =====================================================
