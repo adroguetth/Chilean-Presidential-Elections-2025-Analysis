@@ -50,8 +50,21 @@ ORDER BY
 -- =====================================================
 -- EXPECTED OUTPUT INTERPRETATION:
 -- =====================================================
--- This shows Kast's growth from north to south, revealing geographic patterns:
--- - Northern regions (Arica → Atacama): [growth pattern]
--- - Central regions (Coquimbo → Maule): [growth pattern]  
--- - Southern regions (Ñuble → Magallanes): [growth pattern]
+-- Kast achieved significant vote growth across ALL 16 regions between the first and second round.
+
+-- Key Patterns:
+-- - **Northern Regions** showed the strongest percentage point growth: 
+--   Arica y Parinacota (+36.47 pp), Tarapacá (+35.21 pp), and Antofagasta (+33.56 pp).
+-- - **Metropolitana** led in absolute growth (+238,743 votes), demonstrating Kast's ability 
+--   to expand even in the urban center.
+-- - Southern and Central-Southern regions (Biobío, Los Lagos, La Araucanía) also showed 
+--   very strong absolute growth, reinforcing his rural and provincial base.
+
+-- Political Significance:
+-- - Kast not only consolidated his first-round base but successfully expanded into 
+--   territories previously dominated by Parisi (especially in the North).
+-- - The massive growth in northern regions suggests a highly effective transfer from 
+--   antisystem voters to Kast in the second round.
+-- - This national growth pattern — from extreme North to South — confirms Kast built 
+--   a truly broad and geographically diverse coalition, key to his decisive victory.
 -- =====================================================
