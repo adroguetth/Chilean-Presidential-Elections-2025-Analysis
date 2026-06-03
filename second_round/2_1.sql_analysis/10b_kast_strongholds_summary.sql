@@ -1,4 +1,4 @@
-- =====================================================
+-- =====================================================
 -- 10b. KAST STRONGHOLDS SUMMARY BY CATEGORY
 -- =====================================================
 -- Objective: Show distribution of Kast's winning communes by margin intensity
