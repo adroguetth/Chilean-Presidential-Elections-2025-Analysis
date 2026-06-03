@@ -24,12 +24,19 @@ ORDER BY kast_margin_pp ASC;
 -- =====================================================
 -- EXPECTED OUTPUT INTERPRETATION:
 -- =====================================================
--- These communes represent the closest races in the runoff:
--- - Margins under 1%: True toss-ups that could have flipped
--- - Margins 1-2%: Competitive but Kast held on
--- 
--- Political significance:
--- - These are priority targets for future campaigns
--- - Small shifts in voter behavior would flip these communes
--- - Likely urban/suburban areas with mixed demographics
+-- Jara came extremely close to winning in 6 communes, all decided by margins under 2 percentage points.
+-- The tightest race was in El Bosque (Metropolitana), where Kast won by just 0.42 pp.
+
+-- Geographic Pattern:
+-- - 4 out of 6 communes are in the Metropolitan Region (El Bosque, Estación Central, 
+--   Peñalolén, and implied others), showing Jara's strength in urban working-class areas.
+-- - Two communes in the North (Tocopilla and Freirina) highlight competitive zones 
+--   in traditional mining territories.
+
+-- Political Significance:
+-- - These communes represent the most "flippable" territories for future elections.
+-- - Very small shifts in turnout or voter preference (less than 1,000 votes in most cases) 
+--   would have changed the winner.
+-- - Demonstrates that even in defeat, Jara maintained competitive ground in key urban 
+--   and northern areas, while Kast's victory, though broad, was narrow in several strategic locations.
 -- =====================================================
