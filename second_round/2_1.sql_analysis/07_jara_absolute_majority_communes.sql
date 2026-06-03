@@ -22,45 +22,26 @@ ORDER BY jara_pct DESC;
 -- =====================================================
 -- EXPECTED OUTPUT INTERPRETATION:
 -- =====================================================
--- | Comuna | Region | Percentage |
--- |--------|--------|------------|
--- | Juan Fernandez | Valparaíso | 59.29% |
--- | Pedro Aguirre Cerda | Metropolitana | 58.75% |
--- | Lo Espejo | Metropolitana | 56.17% |
--- | San Joaquin | Metropolitana | 55.60% |
--- | Andacollo | Coquimbo | 55.29% |
--- | Isla de Pascua | Valparaíso | 54.47% |
--- | San Antonio | Valparaíso | 53.85% |
--- | Puente Alto | Metropolitana | 53.75% |
--- | La Granja | Metropolitana | 53.50% |
--- | Chañaral | Atacama | 53.43% |
--- [36 comunas total]
---
--- Geographic pattern:
--- =====================================================
--- Jara's absolute majority communes are exclusively in 5 regions:
--- 1. Metropolitana (21) - The urban heartland
--- 2. Valparaíso (5) - Port cities and special territories
--- 3. Atacama (4) - Northern mining region
--- 4. Coquimbo (3) - Norte Chico
--- 5. Antofagasta (3) - Northern mining
---
--- Notable observations:
--- =====================================================
--- - Juan Fernandez (59.29%) is Jara's strongest commune nationally
--- - Isla de Pascua (Easter Island) also voted for Jara with 54.47%
--- - Pedro Aguirre Cerda (58.75%) is her strongest in Metropolitana
--- - Despite winning 36 communes, only these 36 exceed 50% (no other commune gave her majority)
--- - Even in her winning communes, the margin is often narrow (many below 55%)
---
--- Political significance:
--- =====================================================
--- Jara's support is geographically concentrated in working-class 
--- municipalities of Greater Santiago (Pedro Aguirre Cerda, Lo Espejo, 
--- San Joaquin, La Granja, Renca, Lo Prado, Conchalí, Cerro Navia, Pudahuel)
--- plus isolated pockets in mining regions and port cities.
---
--- The complete absence of Jara majority communes in: Biobío, Los Lagos, 
--- La Araucanía, Maule, Ñuble, Los Ríos, Magallanes, Aysén, Tarapacá, 
--- Arica, Libertador is striking.
+-- Jeannette Jara achieved absolute majority (>50%) in only 36 communes (10.4% of total).
+-- Her strongest performances were in Juan Fernández (59.29%) and Pedro Aguirre Cerda (58.75%).
+
+-- Geographic Concentration:
+-- - Metropolitana: 21 communes (the clear core of her support)
+-- - Valparaíso: 5 communes (including Easter Island and Juan Fernández)
+-- - Atacama: 4 communes
+-- - Coquimbo: 3 communes
+-- - Antofagasta: 3 communes
+
+-- Key Observations:
+-- - Jara's absolute majorities are heavily concentrated in the **Metropolitan Region** 
+--   and a few northern/port areas. 
+-- - She did not achieve absolute majority in any commune in the entire Center-South, 
+--   South, or Patagonia (Biobío, Ñuble, La Araucanía, Los Lagos, etc.).
+-- - Even in her winning communes, many results were narrow (just above 50%), 
+--   showing limited enthusiasm in her base.
+
+-- Political Significance:
+-- - Jara's support remained extremely concentrated in urban and mining areas.
+-- - The complete absence of absolute majorities outside the center-north highlights 
+--   the geographic weakness of the progressive coalition in the rest of the country.
 -- =====================================================
