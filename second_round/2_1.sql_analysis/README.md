@@ -2,18 +2,7 @@
 
 **¿Buscas la versión en español?** → [README.es.md](README.es.md)
 
-## 📌 Table of Contents
-
-- [Overview](#overview)
-- [Key Analytical Findings](#key-analytical-findings)
-- [Data Model](#data-model)
-- [Complete Query Index](#complete-query-index)
-- [Setup & Usage](#setup--usage)
-- [Project Structure](#project-structure)
-- [Design & Performance Notes](#design--performance-notes)
-- [License & Attribution](#license--attribution)
-
----
+![MIT License](https://img.shields.io/badge/license-MIT-9ecae1?style=flat-square&logo=open-source-initiative&logoColor=white) ![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?style=flat-square&logo=microsoft-sql-server&logoColor=white)
 
 ## 📋 Overview
 
