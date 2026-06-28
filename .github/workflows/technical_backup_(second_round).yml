@@ -1,0 +1,125 @@
+name: 3-technical backup (Second Round)
+
+on:
+  workflow_dispatch:                 # Manual trigger only (no cron)
+
+env:
+  RETENTION_DAYS: 7
+
+jobs:
+  export:
+    name: 📤 Export and Upload to Google Drive
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 📚 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jupyter nbconvert playwright google-api-python-client google-auth-oauthlib
+          playwright install chromium
+
+      - name: 📁 Create temporary directory
+        run: |
+          mkdir -p temp_pdf_second_round
+
+      - name: 🚀 Run export script
+        env:
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+          GDRIVE_ROOT_FOLDER_ID: ${{ secrets.GDRIVE_ROOT_FOLDER_ID }}
+        run: |
+          python second_round/2_2.electoral_notebooks/additional_scripts/technical_backup/export_notebook_to_pdf.py
+
+      - name: ✅ Verify results
+        if: always()
+        run: |
+          echo "📊 Verifying execution results..."
+          
+          echo "📂 Contents of temp_pdf_second_round:"
+          ls -lah temp_pdf_second_round/ || echo "No PDFs generated"
+          
+          echo -e "\n📄 PDF files generated:"
+          find temp_pdf_second_round -name "*.pdf" -exec ls -lh {} \; | awk '{print $5, $9}' || echo "No PDFs found"
+
+      - name: 📦 Upload artifacts (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-debug-${{ github.run_number }}
+          path: |
+            temp_pdf_second_round/
+          retention-days: 7
+
+      - name: 📦 Upload artifacts (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-pdfs-second-round
+          path: temp_pdf_second_round/*.pdf
+          retention-days: 7
+
+      - name: 📋 Final report
+        if: always()
+        run: |
+          echo "========================================"
+          echo "📄 FINAL EXECUTION REPORT - SECOND ROUND"
+          echo "========================================"
+          echo "📅 Date: $(date)"
+          echo "📌 Trigger: ${{ github.event_name }}"
+          echo "🔗 Commit: ${{ github.sha }}"
+          echo ""
+          
+          echo "📊 Generated files:"
+          if [ -d "temp_pdf_second_round" ]; then
+            ls -la temp_pdf_second_round/
+            TOTAL_PDFS=$(find temp_pdf_second_round -name "*.pdf" 2>/dev/null | wc -l)
+            echo ""
+            echo "📄 Total PDFs generated: $TOTAL_PDFS"
+            if [ "$TOTAL_PDFS" -gt 0 ]; then
+              echo "✅ All PDFs generated successfully"
+            else
+              echo "❌ No PDFs were generated"
+            fi
+          else
+            echo "❌ Temporary directory not found"
+          fi
+          
+          echo ""
+          echo "🚀 Google Drive upload status:"
+          echo "   Check the script output above for upload confirmation"
+          
+          echo ""
+          echo "📁 Expected Drive structure:"
+          echo "   Chilean Elections 2025 Analysis/"
+          echo "   └── second_round/"
+          echo "       └── technical_backup/"
+          echo "           ├── EN/"
+          echo "           │   ├── electoral_analysis_2025_second_round_EN.ipynb"
+          echo "           │   └── electoral_analysis_2025_second_round_EN.pdf"
+          echo "           └── ES/"
+          echo "               ├── electoral_analysis_2025_second_round_ES.ipynb"
+          echo "               └── electoral_analysis_2025_second_round_ES.pdf"
+          
+          echo ""
+          echo "✅ Process completed"
+          echo "========================================"
+
+      - name: 🧹 Clean up temporary files
+        if: always()
+        run: |
+          echo "🧹 Cleaning up temporary files..."
+          rm -rf temp_pdf_second_round
+          echo "✅ Cleanup completed"
