@@ -200,7 +200,7 @@ Todos los archivos de datos se cargan directamente desde el directorio `raw/` de
 
 ```bash
 git clone https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis.git
-cd Chilean-Presidential-Elections-2025-Analysis/second_round/2_notebooks
+cd Chilean-Presidential-Elections-2025-Analysis/second_round/2_2.electoral_notebooks
 ```
 
 2. **Crear entorno virtual (recomendado)**
