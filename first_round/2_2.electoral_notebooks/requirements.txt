@@ -1,0 +1,18 @@
+# ============================================================================
+# requirements.txt — Chilean Presidential Election 2025 · First Round Analysis
+# Python >= 3.10
+# ============================================================================
+# ── Core data manipulation ───────────────────────────────────────────────────
+pandas>=2.0.0
+numpy>=1.24.0
+# ── Geospatial analysis and mapping ─────────────────────────────────────────
+geopandas>=0.14.0
+shapely>=2.0.0          # geopandas dependency (geometry operations)
+pyproj>=3.6.0           # geopandas dependency (CRS handling)
+# ── Visualisation ────────────────────────────────────────────────────────────
+matplotlib>=3.7.0
+# ── Jupyter environment ──────────────────────────────────────────────────────
+jupyterlab>=4.0.0
+ipykernel>=6.0.0
+# ── Standard library (no install required — listed for reference) ────────────
+# os, re, pathlib, unicodedata — built-in
