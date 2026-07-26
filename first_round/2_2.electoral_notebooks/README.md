@@ -79,7 +79,7 @@ Each chapter follows the same structure: an introduction framing the question, a
 
 **Runoff projections carry a structural tilt, not a verdict.** Four transfer scenarios (see Ch. 12) place Kast ahead in every case, but the margin swings from 2.4 million votes (best case for Kast) to just 112,774 (best case for Jara) depending entirely on how Franco Parisi's electorate — the real "kingmaker" of the runoff — ultimately divides. These are modelled scenarios built on transfer assumptions, not observed results.
 
-*A full, section-by-section breakdown with all supporting tables lives in [`Key_Findings.md`](Key_Findings.md).*
+*A full, section-by-section breakdown with all supporting tables lives in [`key_Findings.md`](key_Findings.md).*
 
 ------
 
