@@ -1,7 +1,3 @@
-Here is the full translation into **English**:
-
----
-
 ## Key Findings: Electoral Analysis – First Round Presidential Election 2025
 
 ### Executive Summary
