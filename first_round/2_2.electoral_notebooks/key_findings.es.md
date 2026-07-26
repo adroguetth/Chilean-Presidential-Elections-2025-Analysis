@@ -1,4 +1,4 @@
-## Key Findings: Análisis Electoral Primera Vuelta Presidencial 2025
+## Key Findings.es: Análisis Electoral Primera Vuelta Presidencial 2025
 
 ### Resumen Ejecutivo
 
