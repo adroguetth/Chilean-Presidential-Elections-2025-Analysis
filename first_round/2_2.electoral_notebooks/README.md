@@ -14,8 +14,8 @@
 
 | Language       | Notebook                                        | Format                                                       | Backup       |
 | :------------- | :----------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| **🇬🇧 English** | `electoral_analysis_2025_first_round_EN.ipynb` | ![View on GitHub](https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/blob/main/first_round/2_2.electoral_notebooks/electoral_analysis_2025_first_round_EN.ipynb) | ![View in Google Drive: Colab/PDF](https://drive.google.com/drive/folders/1U6RzLaSFLkYrVP-MoXhg_01bKEF7pZ3X?usp=sharing) |
-| **🇪🇸 Español** | `electoral_analysis_2025_first_round_ES.ipynb` | ![View on GitHub](https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/blob/main/first_round/2_2.electoral_notebooks/electoral_analysis_2025_first_round_ES.ipynb) | ![View in Google Drive: Colab/PDF]](https://drive.google.com/drive/folders/1jvAD9i8F0YnTLOtgl_dXy_daBXFF0h6u?usp=sharing) |
+| **🇬🇧 English** | `electoral_analysis_2025_first_round_EN.ipynb` | [View on GitHub](https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/blob/main/first_round/2_2.electoral_notebooks/electoral_analysis_2025_first_round_EN.ipynb) | [View in Google Drive: Colab/PDF](https://drive.google.com/drive/folders/1U6RzLaSFLkYrVP-MoXhg_01bKEF7pZ3X?usp=sharing) |
+| **🇪🇸 Español** | `electoral_analysis_2025_first_round_ES.ipynb` | [View on GitHub](https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/blob/main/first_round/2_2.electoral_notebooks/electoral_analysis_2025_first_round_ES.ipynb) | [View in Google Drive: Colab/PDF](https://drive.google.com/drive/folders/1jvAD9i8F0YnTLOtgl_dXy_daBXFF0h6u?usp=sharing) |
 
 ------
 
