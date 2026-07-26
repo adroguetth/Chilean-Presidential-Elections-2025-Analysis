@@ -12,10 +12,10 @@
 
 ## 📥 Acceso Rápido
 
-| Idioma          | Notebook                                        | Enlace                                                       |
-| :-------------- | :----------------------------------------------- | :------------------------------------------------------------ |
-| **🇬🇧 English** | `electoral_analysis_2025_first_round_EN.ipynb` | https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/blob/main/first_round/2_2.electoral_notebooks/electoral_analysis_2025_first_round_EN.ipynb |
-| **🇪🇸 Español** | `electoral_analysis_2025_first_round_ES.ipynb` | https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/blob/main/first_round/2_2.electoral_notebooks/electoral_analysis_2025_first_round_ES.ipynb |
+| Idioma          | Notebook                                        | Enlace                                                       | Respardo                                                       |
+| :-------------- | :----------------------------------------------- | :------------------------------------------------------------ | :------------------------------------------------------------ |
+| **🇬🇧 English** | `electoral_analysis_2025_first_round_EN.ipynb` | [Ver en GitHub](https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/blob/main/first_round/2_2.electoral_notebooks/electoral_analysis_2025_first_round_EN.ipynb) | [Ver en Google Drive: Colab/PDF](https://drive.google.com/drive/folders/1U6RzLaSFLkYrVP-MoXhg_01bKEF7pZ3X?usp=sharing) |
+| **🇪🇸 Español** | `electoral_analysis_2025_first_round_ES.ipynb` | [Ver en GitHub](https://github.com/adroguetth/Chilean-Presidential-Elections-2025-Analysis/blob/main/first_round/2_2.electoral_notebooks/electoral_analysis_2025_first_round_ES.ipynb)| [Ver en Google Drive: Colab/PDF](https://drive.google.com/drive/folders/1jvAD9i8F0YnTLOtgl_dXy_daBXFF0h6u?usp=sharing) |
 
 ------
 
@@ -79,7 +79,7 @@ Cada capítulo sigue la misma estructura: una introducción que plantea la pregu
 
 **Las proyecciones de segunda vuelta muestran una inclinación estructural, no un veredicto.** Cuatro escenarios de transferencia (ver Cap. 12) sitúan a Kast por delante en todos los casos, pero el margen oscila entre 2,4 millones de votos (mejor caso para Kast) y apenas 112.774 (mejor caso para Jara), dependiendo enteramente de cómo se reparta finalmente el electorado de Franco Parisi — el verdadero "gran elector" del balotaje. Se trata de escenarios modelados sobre supuestos de transferencia, no de resultados observados.
 
-*Un desglose completo, sección por sección, con todas las tablas de respaldo, está disponible en [`Key_Findings.md`](Key_Findings.md).*
+*Un desglose completo, sección por sección, con todas las tablas de respaldo, está disponible en [`key_Findings.md`](key_findings.es.md).*
 
 ------
 
