@@ -1,0 +1,133 @@
+// Chile Elections DB — DBML schema
+// Pega este archivo en https://dbdiagram.io para visualizar el diagrama ER
+
+Table dim_commune {
+  commune_id integer [pk, increment]
+  region_code text
+  region_name text [not null]
+  region_order integer
+  macrozone text
+  macrozone_order integer
+  circunscripcion_senatorial text
+  distrito_electoral text
+  commune_name text [not null]
+  population integer
+  province text
+  regional_capital integer [default: 0, note: '1 = comuna es capital regional']
+  provincial_capital integer [default: 0, note: '1 = comuna es capital provincial']
+
+  indexes {
+    commune_name [name: 'idx_dim_commune_name']
+    region_code [name: 'idx_dim_commune_region']
+    macrozone [name: 'idx_dim_commune_macrozone']
+    province [name: 'idx_dim_commune_province']
+  }
+
+  Note: 'Dimensión geográfica y administrativa de las 346 comunas de Chile'
+}
+
+Table fact_first_round_2021 {
+  id integer [pk, increment]
+  commune_id integer [ref: > dim_commune.commune_id]
+  artes_votes integer
+  artes_pct real
+  boric_votes integer
+  boric_pct real
+  enriquez_ominami_votes integer
+  enriquez_ominami_pct real
+  kast_votes integer
+  kast_pct real
+  parisi_votes integer
+  parisi_pct real
+  provoste_votes integer
+  provoste_pct real
+  sichel_votes integer
+  sichel_pct real
+  blank_votes integer
+  blank_pct real
+  casted_votes integer
+  casted_pct real
+  null_votes integer
+  null_pct real
+
+  indexes {
+    commune_id [name: 'idx_fr2021_commune']
+  }
+
+  Note: 'Resultados primera vuelta presidencial 2021 por comuna'
+}
+
+Table fact_second_round_2021 {
+  id integer [pk, increment]
+  commune_id integer [ref: > dim_commune.commune_id]
+  boric_votes integer
+  boric_pct real
+  kast_votes integer
+  kast_pct real
+  blank_votes integer
+  blank_pct real
+  casted_votes integer
+  casted_pct real
+  null_votes integer
+  null_pct real
+
+  indexes {
+    commune_id [name: 'idx_sr2021_commune']
+  }
+
+  Note: 'Resultados segunda vuelta presidencial 2021 por comuna'
+}
+
+Table fact_first_round_2025 {
+  id integer [pk, increment]
+  commune_id integer [ref: > dim_commune.commune_id]
+  artes_votes integer
+  artes_pct real
+  enriquez_ominami_votes integer
+  enriquez_ominami_pct real
+  jara_votes integer
+  jara_pct real
+  kaiser_votes integer
+  kaiser_pct real
+  kast_votes integer
+  kast_pct real
+  matthei_votes integer
+  matthei_pct real
+  mayne_nicholls_votes integer
+  mayne_nicholls_pct real
+  parisi_votes integer
+  parisi_pct real
+  blank_votes integer
+  blank_pct real
+  casted_votes integer
+  casted_pct real
+  null_votes integer
+  null_pct real
+
+  indexes {
+    commune_id [name: 'idx_fr2025_commune']
+  }
+
+  Note: 'Resultados primera vuelta presidencial 2025 por comuna'
+}
+
+Table fact_second_round_2025 {
+  id integer [pk, increment]
+  commune_id integer [ref: > dim_commune.commune_id]
+  jara_votes integer
+  jara_pct real
+  kast_votes integer
+  kast_pct real
+  blank_votes integer
+  blank_pct real
+  casted_votes integer
+  casted_pct real
+  null_votes integer
+  null_pct real
+
+  indexes {
+    commune_id [name: 'idx_sr2025_commune']
+  }
+
+  Note: 'Resultados segunda vuelta presidencial 2025 por comuna'
+}
