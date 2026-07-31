@@ -1,0 +1,103 @@
+erDiagram
+    dim_commune {
+        integer commune_id PK
+        text region_code
+        text region_name
+        integer region_order
+        text macrozone
+        integer macrozone_order
+        text circunscripcion_senatorial
+        text distrito_electoral
+        text commune_name
+        integer population
+        text province
+        integer regional_capital
+        integer provincial_capital
+    }
+
+    fact_first_round_2021 {
+        integer id PK
+        integer commune_id FK
+        integer artes_votes
+        real artes_pct
+        integer boric_votes
+        real boric_pct
+        integer enriquez_ominami_votes
+        real enriquez_ominami_pct
+        integer kast_votes
+        real kast_pct
+        integer parisi_votes
+        real parisi_pct
+        integer provoste_votes
+        real provoste_pct
+        integer sichel_votes
+        real sichel_pct
+        integer blank_votes
+        real blank_pct
+        integer casted_votes
+        real casted_pct
+        integer null_votes
+        real null_pct
+    }
+
+    fact_second_round_2021 {
+        integer id PK
+        integer commune_id FK
+        integer boric_votes
+        real boric_pct
+        integer kast_votes
+        real kast_pct
+        integer blank_votes
+        real blank_pct
+        integer casted_votes
+        real casted_pct
+        integer null_votes
+        real null_pct
+    }
+
+    fact_first_round_2025 {
+        integer id PK
+        integer commune_id FK
+        integer artes_votes
+        real artes_pct
+        integer enriquez_ominami_votes
+        real enriquez_ominami_pct
+        integer jara_votes
+        real jara_pct
+        integer kaiser_votes
+        real kaiser_pct
+        integer kast_votes
+        real kast_pct
+        integer matthei_votes
+        real matthei_pct
+        integer mayne_nicholls_votes
+        real mayne_nicholls_pct
+        integer parisi_votes
+        real parisi_pct
+        integer blank_votes
+        real blank_pct
+        integer casted_votes
+        real casted_pct
+        integer null_votes
+        real null_pct
+    }
+
+    fact_second_round_2025 {
+        integer id PK
+        integer commune_id FK
+        integer jara_votes
+        real jara_pct
+        integer kast_votes
+        real kast_pct
+        integer blank_votes
+        real blank_pct
+        integer casted_votes
+        real casted_pct
+        integer null_votes
+        real null_pct
+    }
+
+    dim_commune ||--o{ fact_first_round_2021 : "commune_id"
+    dim_commune ||--o{ fact_second_round_2021 : "commune_id"
+    dim_commune ||--o{ fact_first_round_2025 : "commune_id"
+    dim_commune ||--o{ fact_second_round_2025 : "commune_id"
