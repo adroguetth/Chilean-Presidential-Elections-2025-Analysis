@@ -89,16 +89,16 @@ def main():
 
     # Page routing
     if st.session_state.page == "Summary":
-        from pages import 1_Summary as summary_page
-        summary_page.render(t)
+        from pages.summary import render as render_summary
+        render_summary(t)
 
     elif st.session_state.page == "First Round":
-        from pages import 2_First_Round as first_round_page
-        first_round_page.render(t)
+        from pages.first_round import render as render_first_round
+        render_first_round(t)
 
     elif st.session_state.page == "Second Round":
-        from pages import 3_Second_Round as second_round_page
-        second_round_page.render(t)
+        from pages.second_round import render as render_second_round
+        render_second_round(t)
 
     else:
         st.warning(t["no_data"])
