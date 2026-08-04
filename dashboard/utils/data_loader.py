@@ -5,7 +5,6 @@ Data loading from SQLite database with caching.
 import os
 import sqlite3
 import urllib.request
-from typing import Optional
 
 import pandas as pd
 import streamlit as st
