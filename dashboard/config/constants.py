@@ -2,10 +2,6 @@
 Constants used across the dashboard.
 """
 
-# ============================================================================
-# CANDIDATE METADATA — First Round 2025
-# ============================================================================
-
 CANDIDATES_2025 = {
     "Jeannette Jara": {
         "column": "jara_votes",
@@ -21,7 +17,7 @@ CANDIDATES_2025 = {
     },
     "Franco Parisi": {
         "column": "parisi_votes",
-        "party": "Partido de la Gente (PDG)",
+        "party": "Partido de la Gente",
         "color": "#3166B5",
         "short_name": "Parisi",
     },
@@ -45,7 +41,7 @@ CANDIDATES_2025 = {
     },
     "Marco Enríquez-Ominami": {
         "column": "enriquez_ominami_votes",
-        "party": "Izquierda Independiente",
+        "party": "Independiente de Izquierda",
         "color": "#D43986",
         "short_name": "Enríquez-Ominami",
     },
@@ -56,10 +52,6 @@ CANDIDATES_2025 = {
         "short_name": "Artés",
     },
 }
-
-# ============================================================================
-# CANDIDATE METADATA — Second Round 2025
-# ============================================================================
 
 CANDIDATES_2025_SR = {
     "Jeannette Jara": {
@@ -75,10 +67,6 @@ CANDIDATES_2025_SR = {
         "short_name": "Kast",
     },
 }
-
-# ============================================================================
-# MACROZONE MAPPING
-# ============================================================================
 
 MACROZONE_MAP = {
     15: "Norte Grande",
@@ -108,22 +96,16 @@ MACROZONE_ORDER = {
     "Patagonia": 6,
 }
 
-# ============================================================================
-# COLORS — Null/Blank Map (Protest Vote)
-# ============================================================================
-
 PROTEST_COLORS = {
-    "very_high": "#8B0000",   # > 10%
-    "high": "#CC3333",        # 7% - 10%
-    "medium": "#E68A2E",      # 5% - 7%
-    "low": "#F4C542",         # 3% - 5%
-    "very_low": "#A8D5A2",    # < 3%
+    "very_high": "#8B0000",
+    "high": "#CC3333",
+    "medium": "#E68A2E",
+    "low": "#F4C542",
+    "very_low": "#A8D5A2",
     "no_data": "#D3D3D3",
 }
 
-# ============================================================================
-# DATA SOURCE
-# ============================================================================
+PADRON_ELECTORAL_2025 = 15_779_102
 
 DB_URL = (
     "https://raw.githubusercontent.com/adroguetth/"
@@ -132,10 +114,6 @@ DB_URL = (
 )
 
 DB_LOCAL_PATH = "chile_elections.db"
-
-# ============================================================================
-# FILTERS — Default values
-# ============================================================================
 
 DEFAULT_FILTERS = {
     "macrozone": None,
