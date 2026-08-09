@@ -5,130 +5,110 @@ Plotly chart components.
 import plotly.graph_objects as go
 import streamlit as st
 
-from config.constants import CANDIDATES_2025_SR
 from utils.calculations import format_thousands
 
 
 def render_second_round_chart(results: dict, t: dict):
     """
-    Render a stacked horizontal bar chart for second round results.
-
-    Parameters
-    ----------
-    results : dict
-        Dictionary with jara_votes, kast_votes, jara_pct, kast_pct,
-        diff_votes, diff_pct, winner.
-    t : dict
-        Translation dictionary.
+    Render the second round result as an HTML/CSS rounded bar (no Plotly).
     """
-    # Data
-    candidates = [
-        {"name": "José Antonio Kast", "votes": results["kast_votes"], "pct": results["kast_pct"], "color": "#1F3A5F"},
-        {"name": "Jeannette Jara", "votes": results["jara_votes"], "pct": results["jara_pct"], "color": "#E84A4A"},
-    ]
+    jara_name = "Jeannette Jara"
+    kast_name = "José Antonio Kast"
 
-    # Sort: Kast first (left), Jara second (right)
-    candidates_sorted = sorted(candidates, key=lambda x: x["votes"], reverse=True)
-    left = candidates_sorted[0]
-    right = candidates_sorted[1]
+    jara_votes = results["jara_votes"]
+    kast_votes = results["kast_votes"]
+    jara_pct = results["jara_pct"]
+    kast_pct = results["kast_pct"]
 
-    # Create figure
-    fig = go.Figure()
+    winner = results["winner"]
+    winner_color = "#1F3A5F" if winner == kast_name else "#E84A4A"
 
-    # Left bar (Kast)
-    fig.add_trace(go.Bar(
-        x=[left["pct"]],
-        y=[""],
-        orientation="h",
-        name=left["name"],
-        marker_color=left["color"],
-        text=[f"{left['pct']:.2f}%"],
-        textposition="inside",
-        textfont=dict(color="white", size=14, weight="bold"),
-        hovertemplate=f"{left['name']}<br>{left['pct']:.2f}%<br>{left['votes']:,} {t['votes']}<extra></extra>",
-    ))
+    diff_sign = "+" if results["diff_votes"] > 0 else ""
+    diff_votes_formatted = format_thousands(abs(results["diff_votes"]))
+    diff_pct = abs(results["diff_pct"])
 
-    # Right bar (Jara)
-    fig.add_trace(go.Bar(
-        x=[right["pct"]],
-        y=[""],
-        orientation="h",
-        name=right["name"],
-        marker_color=right["color"],
-        text=[f"{right['pct']:.2f}%"],
-        textposition="inside",
-        textfont=dict(color="white", size=14, weight="bold"),
-        hovertemplate=f"{right['name']}<br>{right['pct']:.2f}%<br>{right['votes']:,} {t['votes']}<extra></extra>",
-    ))
+    st.markdown(
+        f"""<div style="text-align:center;margin-bottom:0.6rem;">
+<div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:#888780;">{t['winner']}</div>
+<div style="font-size:20px;font-weight:700;color:{winner_color};">{winner}</div>
+</div>
+<div style="display:flex;width:100%;height:44px;border-radius:10px;overflow:hidden;">
+<div style="width:{kast_pct}%;background:#1F3A5F;display:flex;align-items:center;justify-content:center;">
+<span style="color:white;font-size:15px;font-weight:700;">{kast_pct:.2f}%</span>
+</div>
+<div style="width:{jara_pct}%;background:#E84A4A;display:flex;align-items:center;justify-content:center;">
+<span style="color:white;font-size:15px;font-weight:700;">{jara_pct:.2f}%</span>
+</div>
+</div>""",
+        unsafe_allow_html=True,
+    )
 
-    # Layout
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown(
+            f"""<div style="font-size:12px;color:#888780;">{jara_name}</div>
+<div style="font-size:14px;font-weight:600;color:#1a1a18;">{format_thousands(jara_votes)} {t['votes']}</div>""",
+            unsafe_allow_html=True,
+        )
+
+    with col2:
+        st.markdown(
+            f"""<div style="font-size:12px;color:#888780;text-align:center;">{t['difference']}</div>
+<div style="font-size:14px;font-weight:600;color:#1a1a18;text-align:center;">{diff_sign}{diff_votes_formatted} {t['votes']} ({diff_sign}{diff_pct:.2f} pp)</div>""",
+            unsafe_allow_html=True,
+        )
+
+    with col3:
+        st.markdown(
+            f"""<div style="font-size:12px;color:#888780;text-align:right;">{kast_name}</div>
+<div style="font-size:14px;font-weight:600;color:#1a1a18;text-align:right;">{format_thousands(kast_votes)} {t['votes']}</div>""",
+            unsafe_allow_html=True,
+        )
+
+
+def render_donut_chart(data: dict, t: dict):
+    """
+    Render a donut chart showing communes won by each candidate.
+    """
+    if not data:
+        st.info("No hay datos de comunas ganadas para mostrar.")
+        return
+
+    sorted_items = sorted(data.items(), key=lambda x: x[1], reverse=True)
+    labels = [item[0] for item in sorted_items]
+    values = [item[1] for item in sorted_items]
+
+    color_map = {
+        "Kast": "#1F3A5F",
+        "Jara": "#E84A4A",
+        "Parisi": "#3166B5",
+        "Kaiser": "#F28A3D",
+        "Matthei": "#2E73C1",
+        "Mayne-Nicholls": "#D5DFE4",
+        "Enríquez-Ominami": "#D43986",
+        "Artés": "#CC2222",
+    }
+    colors = [color_map.get(name, "#888888") for name in labels]
+
+    fig = go.Figure(data=[go.Pie(
+        labels=labels,
+        values=values,
+        hole=0.55,
+        marker=dict(colors=colors, line=dict(color='#ffffff', width=2)),
+        textinfo='label+percent',
+        textposition='inside',
+        insidetextorientation='horizontal',
+        hoverinfo='label+value+percent',
+        showlegend=False,
+    )])
+
     fig.update_layout(
-        barmode="stack",
-        title={
-            "text": f"<b>{t['winner']}</b><br>{results['winner']}",
-            "x": 0.5,
-            "xanchor": "center",
-            "font": dict(size=16),
-        },
-        xaxis=dict(
-            title="%",
-            range=[0, 100],
-            tickformat=".0f",
-            showgrid=True,
-            gridcolor="#E0E0E0",
-        ),
-        yaxis=dict(
-            showticklabels=False,
-            showgrid=False,
-        ),
-        height=150,
-        margin=dict(l=50, r=50, t=80, b=80),
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=-0.3,
-            xanchor="center",
-            x=0.5,
-            font=dict(size=12),
-        ),
-        showlegend=True,
-        plot_bgcolor="white",
-        hovermode="y",
+        height=300,
+        margin=dict(l=20, r=20, t=20, b=20),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"),
     )
 
-    # Add annotation for difference
-    diff_text = (
-        f"{'+' if results['diff_votes'] > 0 else ''}{results['diff_votes']:,} {t['votes']} · "
-        f"{'+' if results['diff_pct'] > 0 else ''}{results['diff_pct']:.2f} pp"
-    )
-    fig.add_annotation(
-        text=f"<b>{t['difference']}:</b> {diff_text}",
-        x=50,
-        y=-0.5,
-        xref="x",
-        yref="y",
-        showarrow=False,
-        font=dict(size=13, color="#333333"),
-    )
-
-    # Add vote counts under the bars
-    fig.add_annotation(
-        text=f"{format_thousands(left['votes'])}",
-        x=5,
-        y=-0.8,
-        xref="x",
-        yref="y",
-        showarrow=False,
-        font=dict(size=11, color="gray"),
-    )
-    fig.add_annotation(
-        text=f"{format_thousands(right['votes'])}",
-        x=95,
-        y=-0.8,
-        xref="x",
-        yref="y",
-        showarrow=False,
-        font=dict(size=11, color="gray"),
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
