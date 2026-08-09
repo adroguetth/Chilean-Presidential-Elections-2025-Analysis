@@ -1,91 +1,240 @@
 """
-Data table components with styling.
+Table components for the dashboard.
+Uses st.components.v1.html() for reliable rendering.
 """
 
-import pandas as pd
 import streamlit as st
+import pandas as pd
 
 
-def render_first_round_table(df_results: pd.DataFrame, t: dict):
+def _table_css(container_id: str) -> str:
+    """Return CSS for a table with the given container ID."""
+    return f"""
+    <style>
+        #{container_id} {{
+            border-radius: 10px;
+            border: 1px solid #E0DED8;
+            overflow: hidden;
+            background: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }}
+        #{container_id} table {{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }}
+        #{container_id} th {{
+            text-align: left;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: #888780;
+            padding: 8px 12px;
+            border-bottom: 1px solid #E0DED8;
+            font-weight: 500;
+            background: #fafafa;
+        }}
+        #{container_id} td {{
+            padding: 8px 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }}
+        #{container_id} tr:last-child td {{
+            border-bottom: none;
+        }}
+        #{container_id} tr:hover td {{
+            background: #F7F6F3;
+        }}
+        .cand-dot {{
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }}
+        .pill {{
+            font-size: 10px;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+            white-space: nowrap;
+        }}
+        .pill-advance {{
+            background: #E8F5E9;
+            color: #2E7D32;
+        }}
+        .pill-normal {{
+            background: #F0EFEC;
+            color: #888780;
+        }}
+        .bar-container {{
+            display: flex;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }}
+        .macro-pill {{
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }}
+        .table-footer {{
+            font-size: 12px;
+            color: #888780;
+            padding: 0.5rem 1.25rem 0.25rem 1.25rem;
+            border-top: 1px solid #E0DED8;
+            margin-top: 0.5rem;
+        }}
+    </style>
     """
-    Render a styled table for first round results.
 
-    Parameters
-    ----------
-    df_results : pd.DataFrame
-        DataFrame with candidate_name, party, votes, pct, status, color.
-    t : dict
-        Translation dictionary.
+
+def render_first_round_table(df: pd.DataFrame, t: dict):
+    """Render candidate table with dots and pills (no internal title)."""
+    if df is None or df.empty:
+        st.warning(f"⚠️ {t.get('no_data', 'No data available')}")
+        return
+
+    rows = ""
+    for _, row in df.iterrows():
+        pill_class = "pill-advance" if row["status"] == "passes_to_runoff" else "pill-normal"
+        status_label = t["passes_to_runoff"] if row["status"] == "passes_to_runoff" else t["does_not_pass"]
+        rows += f"""
+        <tr>
+            <td><span class="cand-dot" style="background:{row['color']};"></span>{row['candidate_name']}</td>
+            <td style="color:#888780;">{row['party']}</td>
+            <td>{row['votes']:,}</td>
+            <td>{row['pct']:.2f}%</td>
+            <td><span class="pill {pill_class}">{status_label}</span></td>
+        </tr>"""
+
+    html = f"""
+    {_table_css("candidate-table")}
+    <div id="candidate-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>{t['candidate']}</th>
+                    <th>{t['party']}</th>
+                    <th>{t['votes']}</th>
+                    <th>{t['pct']}</th>
+                    <th>{t['status']}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows}
+            </tbody>
+        </table>
+        <div class="table-footer">⚖️ {t['runoff_note']}</div>
+    </div>
     """
-    # Prepare display data
-    display_df = df_results.copy()
+    st.components.v1.html(html, height=500, scrolling=False)
 
-    # Format votes with thousands separator
-    display_df["votes_formatted"] = display_df["votes"].apply(lambda x: f"{x:,}".replace(",", "."))
 
-    # Format percentage
-    display_df["pct_formatted"] = display_df["pct"].apply(lambda x: f"{x:.2f}%")
+def render_bastion_table(df: pd.DataFrame, candidate_name: str, color: str):
+    """Render bastion table (Top 5 communes, no internal title)."""
+    if df is None or df.empty:
+        st.write("No hay datos")
+        return
 
-    # Translate status
-    status_map = {
-        "passes_to_runoff": t["passes_to_runoff"],
-        "does_not_pass": t["does_not_pass"],
-    }
-    display_df["status_formatted"] = display_df["status"].map(status_map)
+    # Format numbers
+    df_f = df.copy()
+    df_f["votos"] = df_f["votos"].apply(lambda x: f"{x:,}".replace(",", "."))
+    df_f["porcentaje"] = df_f["porcentaje"].apply(lambda x: f"{x:.2f}%")
 
-    # Select columns for display
-    display_cols = ["candidate_name", "party", "votes_formatted", "pct_formatted", "status_formatted"]
+    rows = ""
+    for i, row in df_f.iterrows():
+        rows += f"""
+        <tr>
+            <td style="text-align:center;color:#888780;font-weight:500;">{i}</td>
+            <td style="font-weight:600;font-size:13px;">{row['commune_name']}</td>
+            <td style="color:#888780;font-size:12px;">{row['region_name']}</td>
+            <td style="color:{color};font-weight:600;text-align:right;">{row['porcentaje']}</td>
+        </tr>"""
 
-    # Rename columns
-    column_names = {
-        "candidate_name": t["candidate"],
-        "party": t["party"],
-        "votes_formatted": t["votes"],
-        "pct_formatted": t["pct"],
-        "status_formatted": t["status"],
-    }
+    html = f"""
+    {_table_css("bastion-table")}
+    <div id="bastion-table">
+        <table>
+            <thead>
+                <tr>
+                    <th style="text-align:center;">#</th>
+                    <th>Comuna</th>
+                    <th>Región</th>
+                    <th style="text-align:right;">%</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows}
+            </tbody>
+        </table>
+    </div>
+    """
+    st.components.v1.html(html, height=350, scrolling=False)
 
-    final_df = display_df[display_cols].rename(columns=column_names)
 
-    # Apply styling
-    def color_status(val):
-        """Color the status cell."""
-        if val == t["passes_to_runoff"]:
-            return "background-color: #DDF4E4; color: #1E753D; font-weight: bold;"
-        return "background-color: #F5F5F5; color: #A0A0A0;"
+def render_macrozone_table(df: pd.DataFrame, color_by_short: dict):
+    """
+    Render macrozone table (no internal title).
+    df must have columns: macrozone, jara_pct, kast_pct, parisi_pct, nulo_pct,
+    ganador, jara_votes, kast_votes, parisi_votes
+    """
+    if df is None or df.empty:
+        st.warning("No hay datos para macrozona")
+        return
 
-    def color_candidate(val):
-        """Color the candidate name based on their color."""
-        # We need to use the original color mapping
-        color_map = df_results.set_index("candidate_name")["color"].to_dict()
-        color = color_map.get(val, "#333333")
-        return f"color: {color}; font-weight: bold;"
+    rows = ""
+    for _, row in df.iterrows():
+        three_sum = row["jara_votes"] + row["kast_votes"] + row["parisi_votes"]
+        w_jara = (row["jara_votes"] / three_sum * 100) if three_sum else 0.0
+        w_kast = (row["kast_votes"] / three_sum * 100) if three_sum else 0.0
+        w_parisi = (row["parisi_votes"] / three_sum * 100) if three_sum else 0.0
 
-    styled = final_df.style.applymap(
-        color_status,
-        subset=[t["status"]],
-    )
+        ganador = row["ganador"]
+        ganador_color = color_by_short.get(ganador, "#888780")
+        r = int(ganador_color[1:3], 16)
+        g = int(ganador_color[3:5], 16)
+        b = int(ganador_color[5:7], 16)
+        pill_bg = f"rgba({r},{g},{b},0.12)"
 
-    # Apply candidate color to first column
-    for idx, row in df_results.iterrows():
-        styled = styled.apply(
-            lambda x, idx=idx, row=row: [f"color: {row['color']}; font-weight: bold;" if i == 0 else "" for i in range(len(x))],
-            axis=1,
-            subset=pd.IndexSlice[idx, :],
-        )
+        rows += f"""
+        <tr>
+            <td style="font-weight:600;">{row['macrozone']}</td>
+            <td style="color:{color_by_short.get('Jara', '#E84A4A')};">{row['jara_pct']:.1f}%</td>
+            <td style="color:{color_by_short.get('Kast', '#1F3A5F')};">{row['kast_pct']:.1f}%</td>
+            <td style="color:{color_by_short.get('Parisi', '#3166B5')};">{row['parisi_pct']:.1f}%</td>
+            <td style="color:#E68A2E;">{row['nulo_pct']:.2f}%</td>
+            <td><span class="macro-pill" style="background:{pill_bg};color:{ganador_color};">{ganador}</span></td>
+            <td>
+                <div class="bar-container">
+                    <div style="width:{w_jara}%;background:{color_by_short.get('Jara', '#E84A4A')};"></div>
+                    <div style="width:{w_kast}%;background:{color_by_short.get('Kast', '#1F3A5F')};"></div>
+                    <div style="width:{w_parisi}%;background:{color_by_short.get('Parisi', '#3166B5')};"></div>
+                </div>
+            </td>
+        </tr>"""
 
-    st.dataframe(
-        styled,
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            t["candidate"]: st.column_config.TextColumn(t["candidate"], width="medium"),
-            t["party"]: st.column_config.TextColumn(t["party"], width="large"),
-            t["votes"]: st.column_config.TextColumn(t["votes"], width="small"),
-            t["pct"]: st.column_config.TextColumn(t["pct"], width="small"),
-            t["status"]: st.column_config.TextColumn(t["status"], width="medium"),
-        },
-    )
-
-    # Add legal note
-    st.caption("⚖️ " + t.get("legal_note", "De acuerdo con la ley N° 18.700, en el caso que ningún candidato obtenga la mayoría absoluta de los votos válidamente emitidos (50% + 1), se realizará una segunda vuelta entre las dos candidaturas más votadas."))
+    html = f"""
+    {_table_css("macro-table")}
+    <div id="macro-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Macrozona</th>
+                    <th>Jara %</th>
+                    <th>Kast %</th>
+                    <th>Parisi %</th>
+                    <th>% Nulo</th>
+                    <th>Ganador</th>
+                    <th>Distribución</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows}
+            </tbody>
+        </table>
+    </div>
+    """
+    st.components.v1.html(html, height=400, scrolling=False)
