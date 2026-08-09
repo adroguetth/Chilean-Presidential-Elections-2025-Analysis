@@ -10,15 +10,12 @@ from components.layout import render_sub_navigation
 def render(t: dict):
     """
     Render the First Round page.
-
-    Parameters
-    ----------
-    t : dict
-        Translation dictionary for the current language.
     """
-    st.title(t["first_round"])
+    st.markdown(
+        f"<h1 style='font-size:28px;font-weight:700;color:#1a1a18;margin-bottom:0.2rem;'>{t['first_round']}</h1>",
+        unsafe_allow_html=True,
+    )
 
-    # Sub-navigation tabs
     tabs = [
         ("summary", t["summary"]),
         ("zones", t["zones"]),
@@ -27,14 +24,12 @@ def render(t: dict):
         ("transfers", t["transfers"]),
     ]
 
-    # Initialize or get current tab
     if "first_round_tab" not in st.session_state:
         st.session_state.first_round_tab = "summary"
 
     selected_tab = render_sub_navigation(t, st.session_state.first_round_tab, tabs)
     st.session_state.first_round_tab = selected_tab
 
-    # Render selected view
     if selected_tab == "summary":
         from views.first_round.summary import render as render_summary
         render_summary(t)
