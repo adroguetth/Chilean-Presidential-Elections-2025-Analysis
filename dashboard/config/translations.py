@@ -1,40 +1,27 @@
 """
 ES/EN translations for the dashboard UI.
-
-All UI text is centralized here. Use `t = LANG[st.session_state.language]`
-to access the current language dictionary.
 """
 
 LANG = {
     "ES": {
-        # Header
-        "app_title": "Elecciones Presidenciales 2025 · Chile",
-        "app_subtitle": "República de Chile · Resultados nacionales",
+        "country": "República de Chile",
+        "app_title": "Elecciones Presidenciales 2025",
+        "app_subtitle": "Resultados nacionales",
         "language": "Idioma",
-
-        # Main navigation
         "summary": "Resumen",
         "first_round": "Primera Vuelta",
         "second_round": "Segunda Vuelta",
-
-        # Sub-navigation (First / Second Round)
         "zones": "Zonas",
         "communal": "Comunal",
         "null_blank": "Nulos / Blancos",
         "transfers": "Transferencias",
         "historical": "Histórico",
-
-        # Segment / Metrics tabs
         "segment": "Segmentación",
         "metrics": "Métricas",
-
-        # Filters
         "macrozone": "Macrozona",
         "region": "Región",
         "commune": "Comuna",
         "all": "Todos",
-
-        # Summary page
         "summary_title": "Resumen Ejecutivo",
         "second_round_title": "Segunda Vuelta",
         "first_round_title": "Primera Vuelta",
@@ -51,45 +38,33 @@ LANG = {
         "party": "Partido / Coalición",
         "pct": "%",
         "status": "Estado",
-
-        # Footer
+        "candidate_results_title": "Resultados por candidato",
+        "runoff_note": "De acuerdo con la ley N° 18.700, en el caso que ningún candidato obtenga la mayoría absoluta de los votos válidamente emitidos (50% + 1), se realizará una segunda vuelta entre las dos candidaturas más votadas.",
         "data_source": "Datos extraídos de Servicio Electoral de Chile (Servel)",
         "data_source_note": "Escrutinio definitivo · Actualizado: 18 de diciembre 2025",
-
-        # General
         "loading": "Cargando datos...",
         "error": "Error al cargar los datos",
         "no_data": "No hay datos disponibles",
     },
     "EN": {
-        # Header
-        "app_title": "Presidential Elections 2025 · Chile",
-        "app_subtitle": "Republic of Chile · National results",
+        "country": "Republic of Chile",
+        "app_title": "Presidential Elections 2025",
+        "app_subtitle": "National results",
         "language": "Language",
-
-        # Main navigation
         "summary": "Summary",
         "first_round": "First Round",
         "second_round": "Second Round",
-
-        # Sub-navigation (First / Second Round)
         "zones": "Zones",
         "communal": "Communal",
         "null_blank": "Null / Blank",
         "transfers": "Transfers",
         "historical": "Historical",
-
-        # Segment / Metrics tabs
         "segment": "Segment",
         "metrics": "Metrics",
-
-        # Filters
         "macrozone": "Macrozone",
         "region": "Region",
         "commune": "Commune",
         "all": "All",
-
-        # Summary page
         "summary_title": "Executive Summary",
         "second_round_title": "Second Round",
         "first_round_title": "First Round",
@@ -106,12 +81,10 @@ LANG = {
         "party": "Party / Coalition",
         "pct": "%",
         "status": "Status",
-
-        # Footer
+        "candidate_results_title": "Results by candidate",
+        "runoff_note": "Under Law N° 18.700, if no candidate obtains an absolute majority of validly cast votes (50% + 1), a second round will be held between the two most-voted candidacies.",
         "data_source": "Data from Servicio Electoral de Chile (Servel)",
         "data_source_note": "Final scrutiny · Updated: December 18, 2025",
-
-        # General
         "loading": "Loading data...",
         "error": "Error loading data",
         "no_data": "No data available",
