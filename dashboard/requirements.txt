@@ -6,3 +6,5 @@ pydeck>=0.9
 geopandas>=0.14
 shapely>=2.0
 streamlit-folium>=0.18
+scipy>=1.10
+scikit-learn>=1.3
