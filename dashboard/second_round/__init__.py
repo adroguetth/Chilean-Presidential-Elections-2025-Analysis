@@ -1,3 +1,0 @@
-"""
-Second round views package.
-"""
