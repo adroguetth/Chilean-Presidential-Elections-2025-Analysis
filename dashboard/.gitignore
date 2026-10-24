@@ -1,0 +1,79 @@
+# ============================================================
+# Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ============================================================
+# Virtual Environments
+# ============================================================
+venv/
+env/
+ENV/
+.venv/
+.virtualenv/
+.python-version
+
+# ============================================================
+# Streamlit
+# ============================================================
+# NOTE: Do NOT ignore the .streamlit/ directory (required for deployment).
+# Uncomment the next line if you use local secrets.
+# .streamlit/secrets.toml
+
+# ============================================================
+# Jupyter Notebooks (if applicable)
+# ============================================================
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# ============================================================
+# Editors / IDEs
+# ============================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ============================================================
+# Local Data (Optional)
+# ============================================================
+# If your CSV/Parquet files are too large to upload to GitHub,
+# uncomment the following lines. 
+# WARNING: If you do this, Streamlit Cloud will NOT be able to read the 
+# local data unless you fetch it from an external service (e.g., S3, GDrive).
+# dashboard/data/
+# *.csv
+# *.parquet
+# *.geojson
+
+# ============================================================
+# Logs and temporary files
+# ============================================================
+*.log
+logs/
+*.tmp
+*.bak
+*.swp
