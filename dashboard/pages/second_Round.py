@@ -124,38 +124,12 @@ def render(t: dict) -> None:
 def _render_safe(module_path: str, t: dict, fallback: str = "") -> None:
     """
     Import and execute the render function of the given module.
-
-    If the module does not exist (ImportError), a translated fallback
-    message is shown instead of crashing the whole page. If the module
-    raises any other exception, it is caught and shown via st.error.
-
-    Uses __import__(module_path, fromlist=["render"]) to import a module
-    by dotted path at runtime. This is needed because the module path is
-    stored in a string (e.g. "views.second_round.summary") and resolved
-    lazily. A regular `import` statement would require the path at parse
-    time, which defeats the purpose of the fallback.
-
-    Parameters
-    ----------
-    module_path : str
-        Dotted module path (e.g. "views.second_round.summary").
-    t : dict
-        Translation dictionary for the current language (LANG[lang]).
-    fallback : str, optional
-        Message shown if the module is missing. If empty, the generic
-        fr_orch_fallback_modulo message is used with the ImportError.
-
-    Returns
-    -------
-    None
     """
     try:
         module = __import__(module_path, fromlist=["render"])
         render_fn = getattr(module, "render")
         render_fn(t)
-    except ImportError as e:
-        st.info(fallback or t["fr_orch_fallback_modulo"].format(err=e))
     except Exception as e:
-        # CAMBIO TEMPORAL PARA DEBUG:
-        st.error(f"ERROR EN MÓDULO {module_path}: {e}")
+        # DEBUG TEMPORAL: Mostrar el error real en pantalla
+        st.error(f"ERROR EN {module_path}: {type(e).__name__} - {e}")
         st.exception(e)
