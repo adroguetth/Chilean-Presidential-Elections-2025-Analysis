@@ -156,5 +156,6 @@ def _render_safe(module_path: str, t: dict, fallback: str = "") -> None:
     except ImportError as e:
         st.info(fallback or t["fr_orch_fallback_modulo"].format(err=e))
     except Exception as e:
-        st.error(f"{t.get('error', 'Error')}: {e}")
+        # CAMBIO TEMPORAL PARA DEBUG:
+        st.error(f"ERROR EN MÓDULO {module_path}: {e}")
         st.exception(e)
