@@ -17,7 +17,7 @@ navigation, and imports the selected page module at call time.
 
 ---
 
-## 1. File Architecture
+## 📁 1. File Architecture
 
 ```text
 dashboard/
@@ -50,7 +50,7 @@ analytics belong to the lower layers.
 
 ---
 
-## 2. End-to-End Data Flow
+## 🔄 2. End-to-End Data Flow
 
 1. **Process start.** Streamlit executes the module top to bottom. The
    `sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))` call makes
@@ -102,7 +102,7 @@ design; there is no write-back path.
 
 ---
 
-## 3. Logs and Custom Logic (Hand-Written)
+## 🛠️ 3. Logs and Custom Logic (Hand-Written)
 
 ### Logging and diagnostics
 
@@ -149,7 +149,7 @@ allowed before it. Moving `inject_custom_css()` above it would raise
 
 ---
 
-## 4. Flow Diagram
+## 🗺️ 4. Flow Diagram
 
 ```mermaid
 flowchart TD
@@ -184,7 +184,7 @@ flowchart TD
 
 ---
 
-## 5. Error Handling and Exceptions
+## ⚠️ 5. Error Handling and Exceptions
 
 | Failure point | Mechanism | User-visible result | Recovery |
 |---|---|---|---|
