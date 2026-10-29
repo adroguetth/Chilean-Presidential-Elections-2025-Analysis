@@ -1,9 +1,13 @@
-# `components/layout.py` — Header and Sub-Navigation
+# 🧭 `components/layout.py` — Header and Sub-Navigation
 
 > **Layer:** 3 — components (presentation and UI state)
+
 > **Runtime entry point:** `render_header(t)` from `app.py`; `render_sub_navigation(t, state_key, tabs)` from `pages/first_Round.py` and `pages/second_Round.py`
+
 > **Reads:** `t` (translation dict), `st.session_state.language`, `st.session_state[state_key]`, and the caller's `tabs` list
+
 > **Writes:** `st.session_state.language` on a language change; `st.session_state[state_key]` through an `on_click` callback
+
 > **Downstream:** `st.columns`, `st.selectbox`, `st.button`, `st.markdown`, `st.divider`, `st.rerun`; page dispatch reads the returned tab key
 
 `components/layout.py` owns the two persistent strips at the top of the app: the
@@ -16,7 +20,7 @@ no chart code and no logging.
 
 ---
 
-## 1. File Architecture
+## 📁 1. File Architecture
 
 ```text
 dashboard/
@@ -47,7 +51,7 @@ it is safe on a cold session.
 
 ---
 
-## 2. End-to-End Data Flow
+## 🔄 2. End-to-End Data Flow
 
 ### `render_header(t)`
 
@@ -96,7 +100,7 @@ labels.
 
 ---
 
-## 3. Logs and Custom Logic (Hand-Written)
+## 🛠️ 3. Logs and Custom Logic
 
 ### Logging and diagnostics
 
@@ -162,7 +166,7 @@ then this remains a conscious exception.
 
 ---
 
-## 4. Flow Diagram
+## 🗺️ 4. Flow Diagram
 
 ```mermaid
 sequenceDiagram
@@ -183,7 +187,7 @@ sequenceDiagram
 
 ---
 
-## 5. Error Handling and Exceptions
+## ⚠️ 5. Error Handling and Exceptions
 
 | Failure point | Mechanism | User-visible result | Recovery |
 |---|---|---|---|
