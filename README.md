@@ -478,7 +478,3 @@ Each component has a **dedicated README** with detailed setup, parameters, gener
   - **SQL:** SQL Server (T-SQL, CTEs)
   - **Notebooks:** Jupyter · Pandas · GeoPandas · NumPy · Matplotlib · Seaborn · scikit-learn · SciPy
   - **Dashboard:** Streamlit · Plotly · PyDeck · GeoPandas · Shapely · scikit-learn · SciPy
-
----
-
-**🇨🇱 Análisis independiente · Datos oficiales SERVEL · Código abierto (MIT)**
